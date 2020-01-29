@@ -1,5 +1,5 @@
 #include <iostream>
-#include "Model.h"
+#include "../src/Model.h"
 
 using namespace std;
 
@@ -21,12 +21,16 @@ int main(int argc, char **argv){
   glfwMakeContextCurrent(window);
 
   //Make star
-  string obj_file_name = "models/star.obj";
+  string obj_file_name = "../data/star.obj";
   if(argc > 1){
     obj_file_name = argv[1];
   }
   Model md(obj_file_name);
   cout << md << endl;
+
+  int rotation = 0;
+  int rotation_speed = 5;
+
 
   // Loop until the user closes the window
   while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
@@ -39,6 +43,14 @@ int main(int argc, char **argv){
     //Clear the color buffer
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
+
+    //Apply transformations
+    glLoadIdentity();
+    rotation += rotation_speed;
+    glRotatef(rotation, 0.0f, 0.0f, 1.0f);
+    glTranslatef(0.75f, 0.0f, 0.0f);
+    glRotatef(rotation, 0.0f, 0.0f, 1.0f);
+    glScalef(0.25f, 0.25f, 0.25f);
 
     //Draw the star
     md.draw();
