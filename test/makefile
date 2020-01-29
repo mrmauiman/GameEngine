@@ -7,14 +7,20 @@ endif
 
 src=../src
 
-engine: Main.o Model.o
-	g++ Main.o Model.o -o engine $(CXXFLAGS)
+gears: Gears.o Model.o
+	g++ Gears.o Model.o -o gears $(CXXFLAGS)
 
-Main.o: Main.cpp $(src)/Model.h
-	g++ -c Main.cpp
+Gears.o: Gears.cpp $(src)/Model.h
+	g++ -c Gears.cpp
+
+orbiting_star: OrbitingStar.o Model.o
+	g++ OrbitingStar.o Model.o -o orbiting_star $(CXXFLAGS)
+
+OrbitingStar.o: OrbitingStar.cpp $(src)/Model.h
+	g++ -c OrbitingStar.cpp
 
 Model.o: $(src)/Model.cpp $(src)/Model.h $(src)/Constants.h
 	g++ -c $(src)/Model.cpp
 
 clean:
-	rm -fr *.o engine
+	rm -fr *.o orbiting_star gears

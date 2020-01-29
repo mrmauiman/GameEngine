@@ -136,10 +136,10 @@ void Model::load(const string &obj_file_name){
 void Model::draw(){
 
   GLfloat colors[verticies.size()*COLOR_SIZE];
-  for(int i = 0; i < verticies.size()*COLOR_SIZE; i+=3){
-    colors[i]   = 1.0f;
-    colors[i+1] = 1.0f;
-    colors[i+2] = 1.0f;
+  for(int i = 0; i < verticies.size()*COLOR_SIZE; i+=COLOR_SIZE){
+    for(int j = 0; j < COLOR_SIZE; j++){
+      colors[i+j] = color[j];
+    }
   }
 
   glEnableClientState(GL_VERTEX_ARRAY);
@@ -151,6 +151,16 @@ void Model::draw(){
   glColorPointer(COLOR_SIZE, GL_FLOAT,  0, colors);
 
   glDrawElements(GL_TRIANGLES, faces.size(), GL_UNSIGNED_BYTE, faces.data());
+}
+
+//PRE:  r is the red value, g is the green value, b is the blue value, a is the
+//      alpha value
+//POST: sets the color member data
+void Model::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a){
+  color[0] = r;
+  color[1] = g;
+  color[2] = b;
+  color[3] = a;
 }
 
 ostream& operator<<(ostream& os, const Model& md)

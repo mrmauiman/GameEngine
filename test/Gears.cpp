@@ -11,7 +11,7 @@ int main(int argc, char **argv){
   }
 
   // Create a windowed mode window and its OpenGL context
-  GLFWwindow* window = glfwCreateWindow(640, 640, "IslandEngine", NULL, NULL);
+  GLFWwindow* window = glfwCreateWindow(640, 640, "Island Engine", NULL, NULL);
   if (!window) {
     glfwTerminate();
     return -1;
@@ -21,15 +21,11 @@ int main(int argc, char **argv){
   glfwMakeContextCurrent(window);
 
   //Make star
-  string obj_file_name = "../data/star.obj";
-  if(argc > 1){
-    obj_file_name = argv[1];
-  }
-  Model md(obj_file_name);
-  cout << md << endl;
+  string obj_file_name = "../data/gear.obj";
+  Model g1(obj_file_name);
 
   int rotation = 0;
-  int rotation_speed = 5;
+  int rotation_speed = 1;
 
 
   // Loop until the user closes the window
@@ -44,16 +40,37 @@ int main(int argc, char **argv){
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    //Apply transformations
-    glLoadIdentity();
     rotation += rotation_speed;
-    glRotatef(rotation, 0.0f, 0.0f, 1.0f);
-    glTranslatef(0.75f, 0.0f, 0.0f);
-    glRotatef(rotation, 0.0f, 0.0f, 1.0f);
-    glScalef(0.25f, 0.25f, 0.25f);
 
-    //Draw the star
-    md.draw();
+    //Gear 1 Transformations
+    g1.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glLoadIdentity();
+    glRotatef(rotation, 0.0f, 0.0f, 1.0f);
+    g1.draw();
+
+    //Gear 2 Transformations
+    g1.setColor(1.0f, 0.0f, 0.0f, 1.0f);
+    glLoadIdentity();
+    glRotatef(90, 0.0f, 0.0f, 1.0f);
+    glTranslatef(1.2f, 0.0f, 0.0f);
+    glRotatef(-rotation, 0.0f, 0.0f, 1.0f);
+    g1.draw();
+
+    //Gear 3 Transformations
+    g1.setColor(0.0f, 1.0f, 0.0f, 1.0f);
+    glLoadIdentity();
+    glRotatef(90+120, 0.0f, 0.0f, 1.0f);
+    glTranslatef(1.2f, 0.0f, 0.0f);
+    glRotatef(-rotation+12, 0.0f, 0.0f, 1.0f);
+    g1.draw();
+
+    //Gear 4 Transformations
+    g1.setColor(0.0f, 0.0f, 1.0f, 1.0f);
+    glLoadIdentity();
+    glRotatef(90+240, 0.0f, 0.0f, 1.0f);
+    glTranslatef(1.2f, 0.0f, 0.0f);
+    glRotatef(-rotation-12, 0.0f, 0.0f, 1.0f);
+    g1.draw();
 
     // Swap front and back buffers
     glfwSwapBuffers(window);
