@@ -1,12 +1,14 @@
-#include "Model.h"
+#include "model.h"
+
+namespace engine {
 
 //PRIVATE
 
 //PRE:  str is a string
 //POST: returns a vector of all items in str seperated by whitespace
-vector<string> Model::tokenize(string str){
-  vector<string> tokens;
-  string current = "";
+std::vector<std::string> Model::tokenize(std::string str){
+  std::vector<std::string> tokens;
+  std::string current = "";
   int c = 0;
   for(int c = 0; c < str.length(); c++){
     if(isspace(str[c])){
@@ -33,7 +35,7 @@ vector<string> Model::tokenize(string str){
 //PRE:  vertex is a line that starts with v and contains vertex data
 //POST: Adds the vertex described in vertex and returns true if the data is
 //      formatted correctly and returns false otherwise
-bool Model::addVertex(vector<string> vertex){
+bool Model::addVertex(std::vector<std::string> vertex){
   bool rv = false;
 
   if(vertex.size() == NUM_VERTEX_TOKENS || vertex.size() == NUM_VERTEX_TOKENS-1){
@@ -41,17 +43,17 @@ bool Model::addVertex(vector<string> vertex){
     for(int i = 1; i < vertex.size(); i++){
       //Convert and check if vertex[i] is a valid float
       try{
-        verticies.push_back(stof(vertex[i]));
-      }catch(exception& e){
+        verticies.push_back(std::stof(vertex[i]));
+      }catch(std::exception& e){
         throw "Invalid Vertex Definition: '" + vertex[i] + "' is not a float";
       }
     }
-    if (vertex.size() == NUM_VERTEX_TOKENS-1){
+    if(vertex.size() == NUM_VERTEX_TOKENS-1){
       verticies.push_back(W_DEFAULT);
     }
     //verticies contains the vertex described
   }else{
-    throw "Invalid Vertex Definition: A face has " + to_string(NUM_VERTEX_TOKENS) + " or " + to_string(NUM_VERTEX_TOKENS-1) + " attributes you gave " + to_string(vertex.size());
+    throw "Invalid Vertex Definition: A face has " + std::to_string(NUM_VERTEX_TOKENS) + " or " + std::to_string(NUM_VERTEX_TOKENS-1) + " attributes you gave " + std::to_string(vertex.size());
   }
 
   return rv;
@@ -60,7 +62,7 @@ bool Model::addVertex(vector<string> vertex){
 //PRE:  face is a line that starts with f and contains face data
 //POST: Adds the face described in face and returns true if the data is
 //      formatted correctly and returns false otherwise
-bool Model::addFace(vector<string> face){
+bool Model::addFace(std::vector<std::string> face){
   bool rv = false;
 
   if(face.size() == NUM_FACE_TOKENS){
@@ -68,14 +70,14 @@ bool Model::addFace(vector<string> face){
     for(int i = 1; i < NUM_FACE_TOKENS; i++){
       //Convert and check if face[i] is a valid int
       try{
-        faces.push_back(stoi(face[i])-1);
-      }catch(exception& e){
+        faces.push_back(std::stoi(face[i])-1);
+      }catch(std::exception& e){
         throw "Invalid Face Definition: '" + face[i] + "' is not an int";
       }
     }
     //faces contains the face described
   }else{
-    throw "Invalid Face Definition: A face has " + to_string(NUM_FACE_TOKENS) + " attributes you gave " + to_string(face.size());
+    throw "Invalid Face Definition: A face has " + std::to_string(NUM_FACE_TOKENS) + " attributes you gave " + std::to_string(face.size());
   }
 
   return rv;
@@ -96,22 +98,22 @@ Model::Model(){
 }
 
 //Constructor
-Model::Model(const string &obj_file_name){
+Model::Model(const std::string &obj_file_name){
   load(obj_file_name);
 }
 
 //PRE: obj_file_name is the path to an .obj file
 //POST: the .obj file specified is loaded into this file
-void Model::load(const string &obj_file_name){
+void Model::load(const std::string &obj_file_name){
   //Empty Previous Data
   clear();
 
-  string line;
-  ifstream file(obj_file_name);
+  std::string line;
+  std::ifstream file(obj_file_name);
   if(file.is_open()){
     try{
       while(getline(file, line)){
-        vector<string> tokens = tokenize(line);
+        std::vector<std::string> tokens = tokenize(line);
         //tokens is each item on the line seperated by whitespace
         if(tokens.size() > 0){
           if(tokens[0] == "v"){
@@ -123,9 +125,9 @@ void Model::load(const string &obj_file_name){
           }
         }
       }
-    }catch(const string msg){
+    }catch(const std::string msg){
       clear();
-      cerr << msg << endl;
+      std::cerr << msg << std::endl;
     }
     file.close();
   }
@@ -163,10 +165,10 @@ void Model::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a){
   color[3] = a;
 }
 
-ostream& operator<<(ostream& os, const Model& md)
-{
-    os << "{" << endl;
-    os << "\tVerticies: {" << endl;
+//<< Overload
+std::ostream& operator<<(std::ostream& os, const Model& md){
+    os << "{" << std::endl;
+    os << "\tVerticies: {" << std::endl;
     for(int i = 0; i < md.verticies.size(); i++){
       if(i%VERTEX_SIZE == 0){
         os << "\t\t[";
@@ -175,13 +177,13 @@ ostream& operator<<(ostream& os, const Model& md)
       os << md.verticies[i];
 
       if(i%VERTEX_SIZE == VERTEX_SIZE-1){
-        os << "]," << endl;
+        os << "]," << std::endl;
       }else{
         os << ", ";
       }
     }
-    os << "\t}," << endl;
-    os << "\tFaces: {" << endl;
+    os << "\t}," << std::endl;
+    os << "\tFaces: {" << std::endl;
     for(int i = 0; i < md.faces.size(); i++){
       if(i%FACE_SIZE == 0){
         os << "\t\t[";
@@ -190,12 +192,14 @@ ostream& operator<<(ostream& os, const Model& md)
       os << 0+md.faces[i];
 
       if(i%FACE_SIZE == FACE_SIZE-1){
-        os << "]," << endl;
+        os << "]," << std::endl;
       }else{
         os << ", ";
       }
     }
-    os << "\t}," << endl;
+    os << "\t}," << std::endl;
     os << "}";
     return os;
+}
+
 }
