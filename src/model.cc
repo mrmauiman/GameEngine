@@ -1,19 +1,23 @@
-#include "model.h"
+/*
+ * Copyright 2020 Maui Kelley
+ */
+
+#include "src/model.h"
 
 namespace engine {
 
-//PRIVATE
+// PRIVATE
 
-//PRE:  str is a string
-//POST: returns a vector of all items in str seperated by whitespace
-std::vector<std::string> Model::tokenize(std::string str){
+// str is a string
+// returns a vector of all items in str seperated by whitespace
+std::vector<std::string> Model::tokenize(std::string str) {
   std::vector<std::string> tokens;
   std::string current = "";
   int c = 0;
   for (int c = 0; c < str.length(); c++) {
     if (isspace(str[c])) {
       if (current != "") {
-        //A token was found
+        // a token was found
         tokens.push_back(current);
         current = "";
       }
@@ -25,23 +29,24 @@ std::vector<std::string> Model::tokenize(std::string str){
     }
   }
   if (current != "") {
-    //Final token
+    // final token
     tokens.push_back(current);
   }
-  //str has been tokenized into tokens
+  // str has been tokenized into tokens
   return tokens;
 }
 
-//PRE:  vertex is a line that starts with v and contains vertex data
-//POST: Adds the vertex described in vertex and returns true if the data is
-//      formatted correctly and returns false otherwise
+// vertex is a line that starts with v and contains vertex data
+// Adds the vertex described in vertex and returns true if the data is
+// formatted correctly and returns false otherwise
 bool Model::addVertex(std::vector<std::string> vertex) {
   bool rv = false;
 
-  if (vertex.size() == NUM_VERTEX_TOKENS || vertex.size() == NUM_VERTEX_TOKENS-1) {
-    //vertex is formatted correctly
+  if (vertex.size() == NUM_VERTEX_TOKENS
+      || vertex.size() == NUM_VERTEX_TOKENS-1) {
+    // vertex is formatted correctly
     for (int i = 1; i < vertex.size(); i++) {
-      //Convert and check if vertex[i] is a valid float
+      // Convert and check if vertex[i] is a valid float
       try {
         verticies.push_back(std::stof(vertex[i]));
       } catch (std::exception& e) {
@@ -51,61 +56,67 @@ bool Model::addVertex(std::vector<std::string> vertex) {
     if (vertex.size() == NUM_VERTEX_TOKENS-1) {
       verticies.push_back(W_DEFAULT);
     }
-    //verticies contains the vertex described
+    // verticies contains the vertex described
   } else {
-    throw "Invalid Vertex Definition: A face has " + std::to_string(NUM_VERTEX_TOKENS) + " or " + std::to_string(NUM_VERTEX_TOKENS-1) + " attributes you gave " + std::to_string(vertex.size());
+    throw "Invalid Vertex Definition: A face has " +
+          std::to_string(NUM_VERTEX_TOKENS) + " or " +
+          std::to_string(NUM_VERTEX_TOKENS-1) + " attributes you gave " +
+          std::to_string(vertex.size());
   }
 
   return rv;
 }
 
-//PRE:  face is a line that starts with f and contains face data
-//POST: Adds the face described in face and returns true if the data is
-//      formatted correctly and returns false otherwise
+// face is a line that starts with f and contains face data
+// Adds the face described in face and returns true if the data is
+// formatted correctly and returns false otherwise
 bool Model::addFace(std::vector<std::string> face) {
   bool rv = false;
 
   if (face.size() == NUM_FACE_TOKENS) {
-    //face is formatted correctly
+    // face is formatted correctly
     for (int i = 1; i < NUM_FACE_TOKENS; i++) {
-      //Convert and check if face[i] is a valid int
+      // Convert and check if face[i] is a valid int
       try {
         faces.push_back(std::stoi(face[i])-1);
       } catch(std::exception& e) {
         throw "Invalid Face Definition: '" + face[i] + "' is not an int";
       }
     }
-    //faces contains the face described
+    // faces contains the face described
   } else {
-    throw "Invalid Face Definition: A face has " + std::to_string(NUM_FACE_TOKENS) + " attributes you gave " + std::to_string(face.size());
+    throw "Invalid Face Definition: A face has " +
+          std::to_string(NUM_FACE_TOKENS) + " attributes you gave " +
+          std::to_string(face.size());
   }
 
   return rv;
 }
 
-//PRE:  This is defined
-//POST: empties the verticies and faces vectors
+// This is defined
+// empties the verticies and faces vectors
 void Model::clear() {
   verticies.clear();
   faces.clear();
 }
 
-//PUBLIC
+// PUBLIC
 
-//Default Constructor
+// Default Constructor
 Model::Model() {
-  //Nothing Needs to be done
+  // Nothing Needs to be done
 }
 
-//Constructor
+// obj_file_name is the path to an .obj file
+// the .obj file specified is loaded into this
 Model::Model(const std::string &obj_file_name) {
   load(obj_file_name);
 }
 
-//PRE: obj_file_name is the path to an .obj file
-//POST: the .obj file specified is loaded into this file
+// obj_file_name is the path to an .obj file
+// the .obj file specified is loaded into this
 void Model::load(const std::string &obj_file_name) {
-  //Empty Previous Data
+  // Empty Previous Data
   clear();
 
   std::string line;
@@ -114,13 +125,13 @@ void Model::load(const std::string &obj_file_name) {
     try {
       while (getline(file, line)) {
         std::vector<std::string> tokens = tokenize(line);
-        //tokens is each item on the line seperated by whitespace
+        // tokens is each item on the line seperated by whitespace
         if (tokens.size() > 0) {
           if (tokens[0] == "v") {
-            //Line is a vertex
+            // Line is a vertex
             addVertex(tokens);
-          } else if(tokens[0] == "f") {
-            //Line is a face
+          } else if (tokens[0] == "f") {
+            // Line is a face
             addFace(tokens);
           }
         }
@@ -133,14 +144,13 @@ void Model::load(const std::string &obj_file_name) {
   }
 }
 
-//PRE: An object has been loaded
-//POST: renders the obj file loaded
+// An object has been loaded
+// renders the obj file loaded
 void Model::draw() {
-
-  GLfloat colors[verticies.size()*COLOR_SIZE];
+  std::vector<GLfloat> colors;
   for (int i = 0; i < verticies.size()*COLOR_SIZE; i+=COLOR_SIZE) {
     for (int j = 0; j < COLOR_SIZE; j++) {
-      colors[i+j] = color[j];
+      colors.push_back(color[j]);
     }
   }
 
@@ -155,9 +165,9 @@ void Model::draw() {
   glDrawElements(GL_TRIANGLES, faces.size(), GL_UNSIGNED_BYTE, faces.data());
 }
 
-//PRE:  r is the red value, g is the green value, b is the blue value, a is the
-//      alpha value
-//POST: sets the color member data
+// r is the red value, g is the green value, b is the blue value, a is the
+// alpha value
+// sets the color member data
 void Model::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a) {
   color[0] = r;
   color[1] = g;
@@ -165,7 +175,7 @@ void Model::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a) {
   color[3] = a;
 }
 
-//<< Overload
+// << Overload
 std::ostream& operator<<(std::ostream& os, const Model& md) {
     os << "{" << std::endl;
     os << "\tVerticies: {" << std::endl;
@@ -202,4 +212,4 @@ std::ostream& operator<<(std::ostream& os, const Model& md) {
     return os;
 }
 
-}
+}  // namespace engine
