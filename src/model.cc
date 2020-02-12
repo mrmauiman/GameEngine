@@ -160,7 +160,7 @@ void Model::draw() {
   GLfloat* verts = verticies.data();
 
   glVertexPointer(VERTEX_SIZE, GL_FLOAT, 0, verts);
-  glColorPointer(COLOR_SIZE, GL_FLOAT,  0, colors);
+  glColorPointer(COLOR_SIZE, GL_FLOAT,  0, colors.data());
 
   glDrawElements(GL_TRIANGLES, faces.size(), GL_UNSIGNED_BYTE, faces.data());
 }

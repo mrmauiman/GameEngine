@@ -60,7 +60,7 @@ namespace engine {
   // changes the game object’s current position by moving it relative to its
   // current position and orientation by the specified vector
   void GameObject::move(glm::vec3 distance) {
-    position = position + distance;
+    position = position + (distance * orientation);
   }
 
   // changes the game object’s current orientation by turning it relative to

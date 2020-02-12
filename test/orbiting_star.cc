@@ -1,8 +1,11 @@
+/*
+ * Copyright 2020 Maui Kelley
+ */
+
 #include <iostream>
-#include "../src/model.h" //Ask how to get #include "model.h" to work
+#include "src/model.h"
 
 int main(int argc, char **argv) {
-
   // Initialize the library
   if (!glfwInit()) {
     return -1;
@@ -18,7 +21,7 @@ int main(int argc, char **argv) {
   // Make the window's context current
   glfwMakeContextCurrent(window);
 
-  //Make star
+  // Make star
   std::string obj_file_name = "data/star.obj";
   if (argc > 1) {
     obj_file_name = argv[1];
@@ -30,18 +33,18 @@ int main(int argc, char **argv) {
 
 
   // Loop until the user closes the window
-  while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
-
+  while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
+         !glfwWindowShouldClose(window)) {
     // Set the rendering viewport location and dimensions
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
 
-    //Clear the color buffer
+    // Clear the color buffer
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    //Apply transformations
+    // Apply transformations
     glLoadIdentity();
     rotation += rotation_speed;
     glRotatef(rotation, 0.0f, 0.0f, 1.0f);
@@ -49,7 +52,7 @@ int main(int argc, char **argv) {
     glRotatef(rotation, 0.0f, 0.0f, 1.0f);
     glScalef(0.25f, 0.25f, 0.25f);
 
-    //Draw the star
+    // Draw the star
     md.draw();
 
     // Swap front and back buffers

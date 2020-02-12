@@ -1,8 +1,11 @@
+/*
+ * Copyright 2020 Maui Kelley
+ */
+
 #include <iostream>
-#include "../src/model.h" //Ask how to get #include "model.h" to work
+#include "src/model.h"
 
 int main(int argc, char **argv) {
-
   // Initialize the library
   if (!glfwInit()) {
     return -1;
@@ -18,7 +21,7 @@ int main(int argc, char **argv) {
   // Make the window's context current
   glfwMakeContextCurrent(window);
 
-  //Make star
+  // Make star
   std::string obj_file_name = "data/star.obj";
   if (argc > 1) {
     obj_file_name = argv[1];
@@ -32,19 +35,19 @@ int main(int argc, char **argv) {
   float dist_speed = -0.1f;
 
   // Loop until the user closes the window
-  while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS && !glfwWindowShouldClose(window)) {
-
+  while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
+         !glfwWindowShouldClose(window)) {
     // Set the rendering viewport location and dimensions
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
 
-    float ratio = width/(float)height;
+    float ratio = width/static_cast<float>(height);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glFrustum(-ratio, ratio, -1.0, 1.0, 10, 100);
 
-    //Clear the color buffer
+    // Clear the color buffer
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
@@ -55,13 +58,13 @@ int main(int argc, char **argv) {
 
     glPushMatrix();
       glTranslatef(0.0f, 0.0f, dist);
-      //Create Matrix for star a
+      // Create Matrix for star a
       glPushMatrix();
         glRotatef(rotation, 0.0f, 0.0f, 1.0f);
         glScalef(0.3f, 0.3f, 0.3f);
         md.draw();
       glPopMatrix();
-      //Create Matrix for star b
+      // Create Matrix for star b
       glPushMatrix();
         glRotatef(rotation, 0.0f, 0.0f, 1.0f);
         glTranslatef(0.7f, 0.0f, 0.0f);
@@ -69,7 +72,7 @@ int main(int argc, char **argv) {
         glScalef(0.2f, 0.2f, 0.2f);
         md.draw();
       glPopMatrix();
-      //Create Matrix for star c
+      // Create Matrix for star c
       glPushMatrix();
         glRotatef(rotation, 0.0f, 0.0f, 1.0f);
         glTranslatef(0.7f, 0.0f, 0.0f);
@@ -79,7 +82,7 @@ int main(int argc, char **argv) {
         glScalef(0.05f, 0.05f, 0.05f);
         md.draw();
       glPopMatrix();
-      //Create Matrix for star d
+      // Create Matrix for star d
       glPushMatrix();
         glRotatef(rotation, 0.0f, 0.0f, 1.0f);
         glTranslatef(0.7f, 0.0f, 0.0f);
