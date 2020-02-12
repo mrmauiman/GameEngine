@@ -76,7 +76,7 @@ int main(int argc, char **argv) {
   GLfloat movespeed = 0.4f;
   GLfloat view_range = 180.0;
 
-  engine::Camera camera(45, 0.1, 100);
+  engine::Camera camera(90, 0.1, 100, false);
 
 
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -90,8 +90,10 @@ int main(int argc, char **argv) {
                   glfwGetKey(window, GLFW_KEY_D);
     int v_input = glfwGetKey(window, GLFW_KEY_W) -
                   glfwGetKey(window, GLFW_KEY_S);
+    int p_input = glfwGetKey(window, GLFW_KEY_Q) -
+                  glfwGetKey(window, GLFW_KEY_E);
 
-    camera.move({h_input * movespeed, 0.0f, v_input * movespeed});
+    camera.move({h_input * movespeed, p_input * movespeed, v_input * movespeed});
 
     // Set the rendering viewport location and dimensions
     int width, height;

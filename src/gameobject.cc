@@ -79,7 +79,6 @@ namespace engine {
   // its current orientation by the specified angle around the specified vector
   void GameObject::turn(GLfloat angle, glm::vec3 axis, bool radians) {
     glm::quat rotate_by = axisToQuat(angle, axis, radians);
-
     orientation = orientation * rotate_by;
   }
 
@@ -88,10 +87,9 @@ namespace engine {
   // so that it “looks at” the specified center position with the specified up
   // vector. A game object “looks at” a point by orienting so that the negative
   // z-axis points from the eye position to the center position.
-  void GameObject::LookAt(glm::vec3 eye, glm::vec3 center, glm::vec3 up) {
-    position = eye;
-    float up_angle = atan(up.x/up.y) - (PI/2);
-    orientation = axisToQuat(up_angle, position - center, true);
+  void GameObject::lookAt(glm::vec3 eye, glm::vec3 center, glm::vec3 up) {
+    glm::mat4 rot_mat = glm::lookAt(eye, center, up);
+    orientation = glm::quat_cast(rot_mat);
   }
 
 }  // namespace engine

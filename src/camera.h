@@ -17,6 +17,7 @@ namespace engine {
 
 class Camera : public GameObject {
  private:
+  // fov is an angle in degrees
   GLfloat fov;
   GLfloat z_near;
   GLfloat z_far;
@@ -26,10 +27,10 @@ class Camera : public GameObject {
   // fovy is the field of view, z_near is the closest objects will be rendered,
   // and z_far is the render distance.  All parameters are positive
   // Creates a new camera with a frustum defined by the parameters
-  Camera(GLfloat fov, GLfloat z_near, GLfloat z_far, bool rad = true);
+  Camera(GLfloat fov, GLfloat z_near, GLfloat z_far, bool radians = true);
 
   // changes the camera’s field of view by angle.
-  void zoom(GLfloat angle);
+  void zoom(GLfloat angle, bool radians = true);
 
   // multiplies the camera’s projection matrix, calcluated using it’s current
   // view frustum and the specified window width and height, with the current

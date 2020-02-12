@@ -10,9 +10,9 @@ namespace engine {
 // fov is the field of view angle, z_near is the closest objects will be
 // rendered, and z_far is the render distance.  All parameters are positive
 // Creates a new camera with a frustum defined by the parameters
-Camera::Camera(GLfloat fov, GLfloat z_near, GLfloat z_far, bool rad) {
-  if (!rad) {
-    fov = deg2rad(fov);
+Camera::Camera(GLfloat fov, GLfloat z_near, GLfloat z_far, bool radians) {
+  if (radians) {
+    fov = rad2deg(fov);
   }
   this->fov = clamp(fov, MIN_FRUSTUM_ANGLE, MAX_FRUSTUM_ANGEL);
   this->z_near = z_near;
@@ -20,7 +20,10 @@ Camera::Camera(GLfloat fov, GLfloat z_near, GLfloat z_far, bool rad) {
 }
 
 // changes the camera’s field of view by angle.
-void Camera::zoom(GLfloat fov) {
+void Camera::zoom(GLfloat fov, bool radians) {
+  if (radians) {
+    fov = rad2deg(fov);
+  }
   this->fov = clamp(this->fov + fov, MIN_FRUSTUM_ANGLE, MAX_FRUSTUM_ANGEL);
 }
 
@@ -29,7 +32,7 @@ void Camera::zoom(GLfloat fov) {
 // matrix.
 void Camera::multProjectionMatrix(int width, int height) const {
   // Calculate how big the frustum near is with a field of view of fov
-  float frust_size = tan(fov) * z_near;
+  float frust_size = tanf(deg2rad(fov/2.0f)) * z_near;
   float ratio = width/static_cast<float>(height);
 
   // Create the frustum

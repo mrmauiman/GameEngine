@@ -10,6 +10,7 @@
 
 #include "lib/glm/gtc/quaternion.hpp"
 #include "lib/glm/vec3.hpp"
+#include "lib/glm/mat4x4.hpp"
 #include "src/constants.h"
 #include "src/helper.h"
 
@@ -69,7 +70,7 @@ class GameObject {
   // so that it “looks at” the specified center position with the specified up
   // vector. A game object “looks at” a point by orienting so that the negative
   // z-axis points from the eye position to the center position.
-  void LookAt(glm::vec3 eye, glm::vec3 center, glm::vec3 up);
+  void lookAt(glm::vec3 eye, glm::vec3 center, glm::vec3 up);
 
   // Virtual Function Update
   virtual void update(float delta) = 0;
