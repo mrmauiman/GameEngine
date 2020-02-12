@@ -146,7 +146,7 @@ void Model::load(const std::string &obj_file_name) {
 
 // An object has been loaded
 // renders the obj file loaded
-void Model::draw() {
+void Model::draw() const {
   std::vector<GLfloat> colors;
   for (int i = 0; i < verticies.size()*COLOR_SIZE; i+=COLOR_SIZE) {
     for (int j = 0; j < COLOR_SIZE; j++) {
@@ -157,9 +157,7 @@ void Model::draw() {
   glEnableClientState(GL_VERTEX_ARRAY);
   glEnableClientState(GL_COLOR_ARRAY);
 
-  GLfloat* verts = verticies.data();
-
-  glVertexPointer(VERTEX_SIZE, GL_FLOAT, 0, verts);
+  glVertexPointer(VERTEX_SIZE, GL_FLOAT, 0, verticies.data());
   glColorPointer(COLOR_SIZE, GL_FLOAT,  0, colors.data());
 
   glDrawElements(GL_TRIANGLES, faces.size(), GL_UNSIGNED_BYTE, faces.data());

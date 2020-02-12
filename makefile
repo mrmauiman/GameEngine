@@ -10,10 +10,10 @@ test=test
 
 all: gears orbiting_star moons_and_planets wasd_movement
 
-wasd_movement: wasd_movement.o model.o
-	g++ -I ./ wasd_movement.o model.o -o wasd_movement $(CXXFLAGS)
+wasd_movement: wasd_movement.o model.o gameobject.o helper.o camera.o rigidbody.o
+	g++ -I ./ wasd_movement.o model.o gameobject.o helper.o camera.o rigidbody.o -o wasd_movement $(CXXFLAGS)
 
-wasd_movement.o: $(test)/wasd_movement.cc $(src)/model.h
+wasd_movement.o: $(test)/wasd_movement.cc $(src)/model.h $(src)/gameobject.h $(src)/helper.h $(src)/constants.h $(src)/camera.h $(src)/rigidbody.h
 	g++ -I ./ -c $(test)/wasd_movement.cc
 
 moons_and_planets: moons_and_planets.o model.o
@@ -36,6 +36,18 @@ orbiting_star.o: $(test)/orbiting_star.cc $(src)/model.h
 
 model.o: $(src)/model.cc $(src)/model.h $(src)/constants.h
 	g++ -I ./ -c $(src)/model.cc
+
+gameobject.o: $(src)/gameobject.cc $(src)/gameobject.h $(src)/constants.h $(src)/helper.h
+	g++ -I ./ -c $(src)/gameobject.cc
+
+camera.o: $(src)/camera.cc $(src)/camera.h $(src)/gameobject.h $(src)/constants.h $(src)/helper.h
+	g++ -I ./ -c $(src)/camera.cc
+
+rigidbody.o: $(src)/rigidbody.cc $(src)/rigidbody.h $(src)/gameobject.h $(src)/model.h $(src)/helper.h
+	g++ -I ./ -c $(src)/rigidbody.cc
+
+helper.o: $(src)/helper.cc $(src)/helper.h $(src)/constants.h
+	g++ -I ./ -c $(src)/helper.cc
 
 clean:
 	rm -fr *.o orbiting_star gears moons_and_planets wasd_movement

@@ -6,16 +6,19 @@
  */
 
 #include <math.h>
+#include <GLFW/glfw3.h>
 
 #include "lib/glm/gtc/quaternion.hpp"
 #include "lib/glm/vec3.hpp"
 #include "src/constants.h"
+#include "src/helper.h"
 
 namespace engine {
 
 class GameObject {
  protected:
   glm::vec3 position;
+  glm::vec3 scale;
   glm::quat orientation;
 
   // angle and axis describe an angle axis and radians is whether angle is
@@ -40,11 +43,18 @@ class GameObject {
   // sets this.orientation to be a quaternion representing the angle axis
   void setOrientation(float angle, glm::vec3 axis, bool radians = true);
 
+  // scale is the new scale
+  // sets this.scale to scale
+  void setScale(glm::vec3 scale);
+
   // returns the position
   glm::vec3 getPosition();
 
   // returns the orientation
-  glm::vec3 getOrientation();
+  glm::quat getOrientation();
+
+  // returns the scale
+  glm::vec3 getScale();
 
   // changes the game object’s current position by moving it relative to its
   // current position and orientation by the specified vector
@@ -62,8 +72,8 @@ class GameObject {
   void LookAt(glm::vec3 eye, glm::vec3 center, glm::vec3 up);
 
   // Virtual Function Update
-  virtual void update(float delta);
-}
+  virtual void update(float delta) = 0;
+};
 }  // namespace engine
 
 #endif  // SRC_GAMEOBJECT_H_

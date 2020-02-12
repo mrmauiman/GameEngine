@@ -14,5 +14,7 @@
 #define GLUBYTE_SHIFT 8
 #define EOS '\0'
 #define PI 3.14159265f
+#define MIN_FRUSTUM_ANGLE 1
+#define MAX_FRUSTUM_ANGEL 179
 
 #endif  // SRC_CONSTANTS_H_

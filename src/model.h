@@ -64,7 +64,7 @@ class Model {
 
   // An object has been loaded
   // renders the obj file loaded
-  void draw();
+  void draw() const;
 
   // r is the red value, g is the green value, b is the blue value, a is the
   // alpha value

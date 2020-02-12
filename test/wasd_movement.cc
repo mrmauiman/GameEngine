@@ -12,6 +12,9 @@
 #include "lib/glm/vec3.hpp"
 #include "src/model.h"
 #include "src/constants.h"
+#include "src/helper.h"
+#include "src/camera.h"
+#include "src/rigidbody.h"
 
 int main(int argc, char **argv) {
   // Seed the random
@@ -38,9 +41,11 @@ int main(int argc, char **argv) {
     obj_file_name = argv[1];
   }
   engine::Model md(obj_file_name);
+  engine::RigidBody star(&md);
 
   obj_file_name = "data/cube.obj";
   engine::Model fl(obj_file_name);
+  engine::RigidBody floor(&fl);
 
   md.setColor(1.0f, 0.0f, 0.0f, 1.0f);
 
@@ -66,12 +71,12 @@ int main(int argc, char **argv) {
     fl_positions.push_back(line);
   }
 
-  GLfloat camera_x = 0;
-  GLfloat camera_z = 0;
   float camera_x_angle = 0;
   float camera_y_angle = 0;
   GLfloat movespeed = 0.4f;
   GLfloat view_range = 180.0;
+
+  engine::Camera camera(45, 0.1, 100);
 
 
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -86,38 +91,36 @@ int main(int argc, char **argv) {
     int v_input = glfwGetKey(window, GLFW_KEY_W) -
                   glfwGetKey(window, GLFW_KEY_S);
 
-    camera_x += h_input * movespeed;
-    camera_z += v_input * movespeed;
+    camera.move({h_input * movespeed, 0.0f, v_input * movespeed});
 
     // Set the rendering viewport location and dimensions
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
 
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    camera.multProjectionMatrix(width, height);
+
     // Get Camera Rotation
     double c_pos_x = 0.0;
     double c_pos_y = 0.0;
-
     glfwGetCursorPos(window, &c_pos_x, &c_pos_y);
 
+
+    // Calculate angles and axies
     camera_y_angle = static_cast<float>(((c_pos_x/width)*view_range) -
                                        (view_range/2));
     camera_x_angle = static_cast<float>(((c_pos_y/height)*view_range) -
                                        (view_range/2));
-
     glm::vec3 y_axis = {0.0f, 1.0f, 0.0f};
     glm::vec3 x_axis = {1.0f, 0.0f, 0.0f};
 
-    glm::quat y_quat = glm::angleAxis((camera_y_angle/180)*PI, y_axis);
-    glm::quat x_quat = glm::angleAxis((camera_x_angle/180)*PI, x_axis);
-
-    glm::quat rot = x_quat * y_quat;
-    glm::vec3 axis = glm::axis(rot);
-
-    float ratio = width/static_cast<float>(height);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glFrustum(-ratio*0.1, ratio*0.1, -0.1, 0.1, 0.1, 100);
+    // Turn the camera
+    glm::vec3 zero_axis = {0.0f, 0.0f, -1.0f};
+    camera.setOrientation(0.0f, zero_axis);
+    camera.turn(camera_x_angle, x_axis, false);
+    camera.turn(camera_y_angle, y_axis, false);
 
     // Clear the color buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -125,13 +128,13 @@ int main(int argc, char **argv) {
     glMatrixMode(GL_MODELVIEW);
 
     glPushMatrix();
-      glRotatef((glm::angle(rot)/PI)*180, axis.x, axis.y, axis.z);
-      glTranslatef(camera_x, 0.0f, camera_z);
+      camera.multViewMatrix();
       // Create Matrix for star
       for (int i = 0; i < num_stars; i++) {
         glPushMatrix();
-          glTranslatef(positions[i*2], 0.0f, positions[(i*2)+1]);
-          md.draw();
+          glm::vec3 p = {positions[i*2], 0.0f, positions[(i*2)+1]};
+          star.setPosition(p);
+          star.draw();
         glPopMatrix();
       }
       // Create Floor
@@ -152,9 +155,12 @@ int main(int argc, char **argv) {
                 fl.setColor(0.2f, 0.2f, 0.2f, 1.0f);
               }
             }
-            glTranslatef(fl_positions[i][j*2], -1.5f, fl_positions[i][(j*2)+1]);
-            glScalef(1.0f, 0.1f, 1.0f);
-            fl.draw();
+            glm::vec3 p = {fl_positions[i][j*2], -1.0f,
+                           fl_positions[i][(j*2)+1]};
+            glm::vec3 s = {1.0f, 0.1f, 1.0f};
+            floor.setPosition(p);
+            floor.setScale(s);
+            floor.draw();
           glPopMatrix();
         }
       }
