@@ -1,5 +1,5 @@
-#ifndef SRC_HELPER_H_
-#define SRC_HELPER_H_
+#ifndef SRC_ENGINE_HELPER_H_
+#define SRC_ENGINE_HELPER_H_
 
 /*
  * Copyright 2020 Maui Kelley
@@ -7,7 +7,7 @@
 
 #include <math.h>
 
-#include "src/constants.h"
+#include "src/engine/constants.h"
 
 namespace engine {
 
@@ -24,4 +24,4 @@ float deg2rad(float theta);
 
 }  // namespace engine
 
-#endif  // SRC_HELPER_H_
+#endif  // SRC_ENGINE_HELPER_H_

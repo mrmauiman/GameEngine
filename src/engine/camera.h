@@ -1,5 +1,5 @@
-#ifndef SRC_CAMERA_H_
-#define SRC_CAMERA_H_
+#ifndef SRC_ENGINE_CAMERA_H_
+#define SRC_ENGINE_CAMERA_H_
 
 /*
  * Copyright 2020 Maui Kelley
@@ -7,11 +7,12 @@
 
 #include <GLFW/glfw3.h>
 
-#include "lib/glm/gtc/quaternion.hpp"
+#include "lib/glm/gtx/quaternion.hpp"
+#include "lib/glm/gtc/type_ptr.hpp"
 #include "lib/glm/vec3.hpp"
-#include "src/gameobject.h"
-#include "src/constants.h"
-#include "src/helper.h"
+#include "src/engine/gameobject.h"
+#include "src/engine/constants.h"
+#include "src/engine/helper.h"
 
 namespace engine {
 
@@ -49,4 +50,4 @@ class Camera : public GameObject {
 
 }  // namespace engine
 
-#endif  // SRC_CAMERA_H_
+#endif  // SRC_ENGINE_CAMERA_H_

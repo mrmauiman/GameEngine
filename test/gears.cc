@@ -3,7 +3,7 @@
  */
 
 #include <iostream>
-#include "../src/model.h"
+#include "../src/engine/model.h"
 
 int main(int argc, char **argv) {
   // Initialize the library

@@ -2,7 +2,7 @@
  * Copyright 2020 Maui Kelley
  */
 
-#include "src/model.h"
+#include "src/engine/model.h"
 
 namespace engine {
 

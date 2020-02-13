@@ -1,5 +1,5 @@
-#ifndef SRC_CONSTANTS_H_
-#define SRC_CONSTANTS_H_
+#ifndef SRC_ENGINE_CONSTANTS_H_
+#define SRC_ENGINE_CONSTANTS_H_
 
 /*
  * Copyright 2020 Maui Kelley
@@ -17,4 +17,4 @@
 #define MIN_FRUSTUM_ANGLE 1
 #define MAX_FRUSTUM_ANGEL 179
 
-#endif  // SRC_CONSTANTS_H_
+#endif  // SRC_ENGINE_CONSTANTS_H_

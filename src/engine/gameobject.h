@@ -1,5 +1,5 @@
-#ifndef SRC_GAMEOBJECT_H_
-#define SRC_GAMEOBJECT_H_
+#ifndef SRC_ENGINE_GAMEOBJECT_H_
+#define SRC_ENGINE_GAMEOBJECT_H_
 
 /*
  * Copyright 2020 Maui Kelley
@@ -7,12 +7,14 @@
 
 #include <math.h>
 #include <GLFW/glfw3.h>
+#include <iostream>
 
-#include "lib/glm/gtc/quaternion.hpp"
+#include "lib/glm/gtx/quaternion.hpp"
 #include "lib/glm/vec3.hpp"
+#include "lib/glm/gtc/type_ptr.hpp"
 #include "lib/glm/mat4x4.hpp"
-#include "src/constants.h"
-#include "src/helper.h"
+#include "src/engine/constants.h"
+#include "src/engine/helper.h"
 
 namespace engine {
 
@@ -77,4 +79,4 @@ class GameObject {
 };
 }  // namespace engine
 
-#endif  // SRC_GAMEOBJECT_H_
+#endif  // SRC_ENGINE_GAMEOBJECT_H_

@@ -1,13 +1,17 @@
-#ifndef SRC_RIGIDBODY_H_
-#define SRC_RIGIDBODY_H_
+#ifndef SRC_ENGINE_RIGIDBODY_H_
+#define SRC_ENGINE_RIGIDBODY_H_
 
 /*
  * Copyright 2020 Maui Kelley
  */
 
-#include "src/gameobject.h"
-#include "src/model.h"
-#include "src/helper.h"
+#include "lib/glm/gtc/type_ptr.hpp"
+#include "lib/glm/gtx/quaternion.hpp"
+#include "lib/glm/vec3.hpp"
+
+#include "src/engine/gameobject.h"
+#include "src/engine/model.h"
+#include "src/engine/helper.h"
 
 namespace engine {
 
@@ -30,4 +34,4 @@ class RigidBody : public GameObject {
 
 }  // namespace engine
 
-#endif  // SRC_RIGIDBODY_H_
+#endif  // SRC_ENGINE_RIGIDBODY_H_

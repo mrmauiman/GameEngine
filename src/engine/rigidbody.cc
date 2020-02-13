@@ -2,7 +2,7 @@
  * Copyright 2020 Maui Kelley
  */
 
-#include "src/rigidbody.h"
+#include "src/engine/rigidbody.h"
 
 namespace engine {
 
@@ -15,12 +15,11 @@ RigidBody::RigidBody(const Model *model) {
 // make sure the matrix mode is GL_MODELVIEW
 void RigidBody::draw() const {
   // Covert the quaternion into something readable for glfw
-  float angle = rad2deg(glm::angle(orientation));
-  glm::vec3 axis = glm::axis(orientation);
+  glm::mat4 rot_mat = glm::toMat4(orientation);
 
   glPushMatrix();
     glTranslatef(position.x, position.y, position.z);
-    glRotatef(angle, axis.x, axis.y, axis.z);
+    glMultMatrixf(glm::value_ptr(rot_mat));
     glScalef(scale.x, scale.y, scale.z);
     model->draw();
   glPopMatrix();

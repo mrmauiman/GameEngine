@@ -1,5 +1,5 @@
-#ifndef SRC_MODEL_H_
-#define SRC_MODEL_H_
+#ifndef SRC_ENGINE_MODEL_H_
+#define SRC_ENGINE_MODEL_H_
 
 /*
  * Copyright 2020 Maui Kelley
@@ -13,7 +13,7 @@
 #include <vector>
 #include <exception>
 
-#include "src/constants.h"
+#include "src/engine/constants.h"
 
 namespace engine {
 
@@ -82,4 +82,4 @@ class Model {
 };
 }  // namespace engine
 
-#endif  // SRC_MODEL_H_
+#endif  // SRC_ENGINE_MODEL_H_

@@ -10,11 +10,11 @@
 
 #include "lib/glm/gtc/quaternion.hpp"
 #include "lib/glm/vec3.hpp"
-#include "src/model.h"
-#include "src/constants.h"
-#include "src/helper.h"
-#include "src/camera.h"
-#include "src/rigidbody.h"
+#include "src/engine/model.h"
+#include "src/engine/constants.h"
+#include "src/engine/helper.h"
+#include "src/engine/camera.h"
+#include "src/engine/rigidbody.h"
 
 int main(int argc, char **argv) {
   // Seed the random
@@ -107,7 +107,10 @@ int main(int argc, char **argv) {
     // Get Camera Rotation
     double c_pos_x = 0.0;
     double c_pos_y = 0.0;
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwGetCursorPos(window, &c_pos_x, &c_pos_y);
+    c_pos_x = static_cast<int>(c_pos_x)%(width*2);
+    c_pos_y = engine::clamp(c_pos_y, 0, height);
 
 
     // Calculate angles and axies

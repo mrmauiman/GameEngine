@@ -2,7 +2,7 @@
  * Copyright 2020 Maui Kelley
  */
 
-#include "src/camera.h"
+#include "src/engine/camera.h"
 
 namespace engine {
 // PUBLIC
@@ -43,9 +43,8 @@ void Camera::multProjectionMatrix(int width, int height) const {
 // multiplies the camera’s current view matrix, calculated usings it’s
 // current position and orientation, with the current matrix.
 void Camera::multViewMatrix() const {
-  float angle = rad2deg(glm::angle(orientation));
-  glm::vec3 axis = glm::axis(orientation);
-  glRotatef(angle, axis.x, axis.y, axis.z);
+  glm::mat4 rot_mat = glm::toMat4(orientation);
+  glMultMatrixf(value_ptr(rot_mat));
   glTranslatef(position.x, position.y, position.z);
 }
 

@@ -2,7 +2,7 @@
  * Copyright 2020 Maui Kelley
  */
 
-#include "src/gameobject.h"
+#include "src/engine/gameobject.h"
 
 namespace engine {
 
