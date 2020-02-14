@@ -1,6 +1,8 @@
 ifeq ($(OS), Windows_NT)
 	CXXFLAGS=-lglfw3dll -lopengl32 -lgdi32 -static-libstdc++ -static-libgcc
+	remove=del
 else
+	remove=rm
 	UNAME=$(shell uname)
 	ifeq ($(UNAME),Darwin)
 		CXXFLAGS=-framework OpenGL -lglfw
@@ -12,8 +14,6 @@ endif
 engine=src/engine
 test=test
 here=.
-
-all: gears orbiting_star moons_and_planets wasd_movement
 
 wasd_movement: wasd_movement.o model.o gameobject.o helper.o camera.o rigidbody.o
 	g++ -I $(here) wasd_movement.o model.o gameobject.o helper.o camera.o rigidbody.o -o wasd_movement $(CXXFLAGS)
@@ -55,7 +55,7 @@ helper.o: $(engine)/helper.cc $(engine)/helper.h $(engine)/constants.h
 	g++ -I $(here) -c $(engine)/helper.cc
 
 clean:
-	rm -fr *.o orbiting_star gears moons_and_planets wasd_movement
+	$(remove) -fr *.o orbiting_star* gears* moons_and_planets* wasd_movement*
 
 run:
 	wasd_movement
