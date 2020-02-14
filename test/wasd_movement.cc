@@ -7,6 +7,7 @@
 #include <time.h>
 #include <iostream>
 #include <vector>
+#include <random>
 
 #include "lib/glm/gtc/quaternion.hpp"
 #include "lib/glm/vec3.hpp"
@@ -18,7 +19,8 @@
 
 int main(int argc, char **argv) {
   // Seed the random
-  unsigned int rand_seed;
+  std::random_device r;
+  std::default_random_engine el(r());
 
   // Initialize the library
   if (!glfwInit()) {
@@ -53,8 +55,10 @@ int main(int argc, char **argv) {
   int num_stars = 20;
   std::vector<GLfloat> positions;
   for (int i = 0; i < num_stars; i++) {
-    GLfloat p1 = (rand_r(&rand_seed)%plane_size)-(plane_size/2);
-    GLfloat p2 = -1*((rand_r(&rand_seed)%plane_size)+1);
+    std::uniform_int_distribution<int> uniform_dist1(-plane_size/2, plane_size/2);
+    GLfloat p1 = uniform_dist1(el);
+    std::uniform_int_distribution<int> uniform_dist2(0, plane_size);
+    GLfloat p2 = -1*uniform_dist2(el);
     positions.push_back(p1);
     positions.push_back(p2);
   }
