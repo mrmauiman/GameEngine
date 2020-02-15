@@ -147,30 +147,15 @@ void Model::load(const std::string &obj_file_name) {
 // An object has been loaded
 // renders the obj file loaded
 void Model::draw() const {
-  std::vector<GLfloat> colors;
-  for (int i = 0; i < verticies.size()*COLOR_SIZE; i+=COLOR_SIZE) {
-    for (int j = 0; j < COLOR_SIZE; j++) {
-      colors.push_back(color[j]);
-    }
-  }
-
   glEnableClientState(GL_VERTEX_ARRAY);
-  glEnableClientState(GL_COLOR_ARRAY);
-
   glVertexPointer(VERTEX_SIZE, GL_FLOAT, 0, verticies.data());
-  glColorPointer(COLOR_SIZE, GL_FLOAT,  0, colors.data());
 
   glDrawElements(GL_TRIANGLES, faces.size(), GL_UNSIGNED_BYTE, faces.data());
 }
 
-// r is the red value, g is the green value, b is the blue value, a is the
-// alpha value
-// sets the color member data
-void Model::setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a) {
-  color[0] = r;
-  color[1] = g;
-  color[2] = b;
-  color[3] = a;
+// returns the number of veriticies
+int Model::getNumVerticies() const {
+  return verticies.size();
 }
 
 // << Overload

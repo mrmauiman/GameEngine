@@ -27,9 +27,6 @@ class Model {
   // Faces is a vector of int vectors
   std::vector<GLubyte> faces;
 
-  // Color is the color to draw the model
-  std::vector<GLfloat> color = {1.0f, 1.0f, 1.0f, 1.0f};
-
   // private functions
 
   // str is a string
@@ -66,10 +63,8 @@ class Model {
   // renders the obj file loaded
   void draw() const;
 
-  // r is the red value, g is the green value, b is the blue value, a is the
-  // alpha value
-  // sets the color member data
-  void setColor(GLfloat r, GLfloat g, GLfloat b, GLfloat a);
+  // returns the number of veriticies
+  int getNumVerticies() const;
 
   // delete the copy constructor
   Model(const Model& model);

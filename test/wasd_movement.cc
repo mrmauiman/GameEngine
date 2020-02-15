@@ -37,55 +37,85 @@ int main(int argc, char **argv) {
   // Make the window's context current
   glfwMakeContextCurrent(window);
 
-  // Make star
+  // Load Star Model
   std::string obj_file_name = "data/star.obj";
   if (argc > 1) {
     obj_file_name = argv[1];
   }
-  engine::Model md(obj_file_name);
-  engine::RigidBody star(&md);
+  engine::Model star_md(obj_file_name);
 
+  // Load Floor Model
   obj_file_name = "data/cube.obj";
-  engine::Model fl(obj_file_name);
-  engine::RigidBody floor(&fl);
+  engine::Model floor_md(obj_file_name);
+  engine::RigidBody floor(&floor_md);
 
-  md.setColor(1.0f, 0.0f, 0.0f, 1.0f);
-
-  int plane_size = 50;
-  int num_stars = 20;
-  std::vector<GLfloat> positions;
-  for (int i = 0; i < num_stars; i++) {
-    int half = plane_size/2;
-    std::uniform_int_distribution<int> uniform_dist1(-half, half);
-    GLfloat p1 = uniform_dist1(el);
-    std::uniform_int_distribution<int> uniform_dist2(0, plane_size);
-    GLfloat p2 = -1*uniform_dist2(el);
-    positions.push_back(p1);
-    positions.push_back(p2);
-  }
-
-  std::vector<std::vector<GLfloat>> fl_positions;
-  for (int i = 0; i < plane_size; i++) {
-    std::vector<GLfloat> line;
-    for (int j = 0; j < plane_size; j++) {
-      int x = i - (plane_size/2);
-      int z = -1 * j;
-      line.push_back(x);
-      line.push_back(z);
-    }
-    fl_positions.push_back(line);
-  }
-
+  // Initialize necessary variables
+  const int plane_size = 50;
+  const int num_stars = 20;
+  const GLfloat movespeed = 0.4f;
+  const GLfloat view_range = 180.0;
   float camera_x_angle = 0;
   float camera_y_angle = 0;
-  GLfloat movespeed = 0.4f;
-  GLfloat view_range = 180.0;
   bool cursor_captured = true;
-
+  std::vector<engine::RigidBody*> stars;
+  std::vector<engine::RigidBody*> floors;
   engine::Camera camera(90, 0.1, 100, false);
 
+  //  Create the Stars
+  for (int i = 0; i < num_stars; i++) {
+    // Create Random Positions
+    int half = plane_size/2;
+    std::uniform_int_distribution<int> uniform_dist1(-half, half);
+    float x = uniform_dist1(el);
+    std::uniform_int_distribution<int> uniform_dist2(0, plane_size);
+    float z = -1*uniform_dist2(el);
 
+    // Create Stars
+    engine::RigidBody * star = new engine::RigidBody(&star_md);
+    glm::vec3 p = {x, 0.0f, z};
+    star->setPosition(p);
+    star->setColor(1, 0, 0, 1);
+    stars.push_back(star);
+  }
+
+  // Create The Floor
+  for (int i = 0; i < plane_size; i++) {
+    for (int j = 0; j < plane_size; j++) {
+      // Get Coordinates
+      int x = i - (plane_size/2);
+      int z = -1 * j;
+
+      // Create Floor Tile
+      engine::RigidBody * tile = new engine::RigidBody(&floor_md);
+      glm::vec3 p = {x, -1.5f, z};
+      glm::vec3 scale = {1.0f, 0.1f, 1.0f};
+      tile->setPosition(p);
+      tile->setScale(scale);
+
+      // Determine Colors
+      if (i%2 == 0) {
+        if (j%2 == 0) {
+          tile->setColor(0.2f, 0.2f, 0.2f, 1.0f);
+        } else {
+          tile->setColor(0.5f, 0.5f, 0.5f, 1.0f);
+        }
+      } else {
+        if (j%2 == 0) {
+          tile->setColor(0.5f, 0.5f, 0.5f, 1.0f);
+        } else {
+          tile->setColor(0.2f, 0.2f, 0.2f, 1.0f);
+        }
+      }
+
+      // Add Floor Tile
+      floors.push_back(tile);
+    }
+  }
+
+  // Set The Clear Color (Sky Box)
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+
+  // Enable Depth
   glEnable(GL_DEPTH_TEST);
 
   // Loop until the user closes the window
@@ -104,6 +134,7 @@ int main(int argc, char **argv) {
       cursor_captured = true;
     }
 
+    // Move The Camera
     camera.move({h_input*movespeed, p_input*movespeed, v_input*movespeed});
 
     // Set the rendering viewport location and dimensions
@@ -111,16 +142,18 @@ int main(int argc, char **argv) {
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
 
+    // Create The Camera Frustum
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     camera.multProjectionMatrix(width, height);
 
-    // Get Camera Rotation
-    double c_pos_x = 0.0;
-    double c_pos_y = 0.0;
+    // Check if we have the cursor
     if (cursor_captured) {
       glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+      // Get the mouse position
+      double c_pos_x = 0.0;
+      double c_pos_y = 0.0;
       glfwGetCursorPos(window, &c_pos_x, &c_pos_y);
       c_pos_x = static_cast<int>(c_pos_x)%(width*2);
       c_pos_y = engine::clamp(c_pos_y, 0, height);
@@ -145,42 +178,22 @@ int main(int argc, char **argv) {
     // Clear the color buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // Draw the rigid bodies
     glMatrixMode(GL_MODELVIEW);
-
     glPushMatrix();
+      // Transform The Camera
       camera.multViewMatrix();
-      // Create Matrix for star
+      // Draw The Stars
       for (int i = 0; i < num_stars; i++) {
         glPushMatrix();
-          glm::vec3 p = {positions[i*2], 0.0f, positions[(i*2)+1]};
-          star.setPosition(p);
-          star.draw();
+          stars[i]->draw();
         glPopMatrix();
       }
-      // Create Floor
+      // Draw The Floor
       for (int i = 0; i < plane_size; i++) {
         for (int j = 0; j < plane_size; j++) {
           glPushMatrix();
-
-            if (i%2 == 0) {
-              if (j%2 == 0) {
-                fl.setColor(0.2f, 0.2f, 0.2f, 1.0f);
-              } else {
-                fl.setColor(0.5f, 0.5f, 0.5f, 1.0f);
-              }
-            } else {
-              if (j%2 == 0) {
-                fl.setColor(0.5f, 0.5f, 0.5f, 1.0f);
-              } else {
-                fl.setColor(0.2f, 0.2f, 0.2f, 1.0f);
-              }
-            }
-            glm::vec3 p = {fl_positions[i][j*2], -1.0f,
-                           fl_positions[i][(j*2)+1]};
-            glm::vec3 s = {1.0f, 0.1f, 1.0f};
-            floor.setPosition(p);
-            floor.setScale(s);
-            floor.draw();
+            floors[(i*plane_size)+j]->draw();
           glPopMatrix();
         }
       }
