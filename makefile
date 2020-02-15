@@ -58,4 +58,4 @@ clean:
 	$(remove) -fr *.o orbiting_star* gears* moons_and_planets* wasd_movement*
 
 run:
-	wasd_movement
+	./wasd_movement

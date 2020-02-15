@@ -55,7 +55,8 @@ int main(int argc, char **argv) {
   int num_stars = 20;
   std::vector<GLfloat> positions;
   for (int i = 0; i < num_stars; i++) {
-    std::uniform_int_distribution<int> uniform_dist1(-plane_size/2, plane_size/2);
+    int half = plane_size/2;
+    std::uniform_int_distribution<int> uniform_dist1(-half, half);
     GLfloat p1 = uniform_dist1(el);
     std::uniform_int_distribution<int> uniform_dist2(0, plane_size);
     GLfloat p2 = -1*uniform_dist2(el);
@@ -79,6 +80,7 @@ int main(int argc, char **argv) {
   float camera_y_angle = 0;
   GLfloat movespeed = 0.4f;
   GLfloat view_range = 180.0;
+  bool cursor_captured = true;
 
   engine::Camera camera(90, 0.1, 100, false);
 
@@ -87,8 +89,7 @@ int main(int argc, char **argv) {
   glEnable(GL_DEPTH_TEST);
 
   // Loop until the user closes the window
-  while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
-         !glfwWindowShouldClose(window)) {
+  while (!glfwWindowShouldClose(window)) {
     // Inputs
     int h_input = glfwGetKey(window, GLFW_KEY_A) -
                   glfwGetKey(window, GLFW_KEY_D);
@@ -97,7 +98,13 @@ int main(int argc, char **argv) {
     int p_input = glfwGetKey(window, GLFW_KEY_Q) -
                   glfwGetKey(window, GLFW_KEY_E);
 
-    camera.move({h_input * movespeed, p_input * movespeed, v_input * movespeed});
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+      cursor_captured = false;
+    } else if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT)) {
+      cursor_captured = true;
+    }
+
+    camera.move({h_input*movespeed, p_input*movespeed, v_input*movespeed});
 
     // Set the rendering viewport location and dimensions
     int width, height;
@@ -111,25 +118,29 @@ int main(int argc, char **argv) {
     // Get Camera Rotation
     double c_pos_x = 0.0;
     double c_pos_y = 0.0;
-    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwGetCursorPos(window, &c_pos_x, &c_pos_y);
-    c_pos_x = static_cast<int>(c_pos_x)%(width*2);
-    c_pos_y = engine::clamp(c_pos_y, 0, height);
+    if (cursor_captured) {
+      glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+      glfwGetCursorPos(window, &c_pos_x, &c_pos_y);
+      c_pos_x = static_cast<int>(c_pos_x)%(width*2);
+      c_pos_y = engine::clamp(c_pos_y, 0, height);
 
-    // Calculate angles and axies
-    camera_y_angle = static_cast<float>(((c_pos_x/width)*view_range) -
-                                       (view_range/2));
-    camera_x_angle = static_cast<float>(((c_pos_y/height)*view_range) -
-                                       (view_range/2));
-    glm::vec3 y_axis = {0.0f, 1.0f, 0.0f};
-    glm::vec3 x_axis = {1.0f, 0.0f, 0.0f};
+      // Calculate angles and axies
+      camera_y_angle = static_cast<float>(((c_pos_x/width)*view_range) -
+                                         (view_range/2));
+      camera_x_angle = static_cast<float>(((c_pos_y/height)*view_range) -
+                                         (view_range/2));
+      glm::vec3 y_axis = {0.0f, 1.0f, 0.0f};
+      glm::vec3 x_axis = {1.0f, 0.0f, 0.0f};
 
-    // Turn the camera
-    glm::vec3 zero_axis = {0.0f, 0.0f, -1.0f};
-    camera.setOrientation(0.0f, zero_axis);
-    camera.turn(camera_x_angle, x_axis, false);
-    camera.turn(camera_y_angle, y_axis, false);
+      // Turn the camera
+      glm::vec3 zero_axis = {0.0f, 0.0f, -1.0f};
+      camera.setOrientation(0.0f, zero_axis);
+      camera.turn(camera_x_angle, x_axis, false);
+      camera.turn(camera_y_angle, y_axis, false);
+    } else {
+      glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
 
     // Clear the color buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
