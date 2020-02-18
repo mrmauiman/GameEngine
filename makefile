@@ -15,6 +15,12 @@ engine=src/engine
 test=test
 here=.
 
+lighting: lighting.o model.o camera.o rigidbody.o gameobject.o helper.o
+	g++ -I $(here) lighting.o model.o camera.o rigidbody.o gameobject.o helper.o -o lighting $(CXXFLAGS)
+
+lighting.o: $(test)/lighting.cc $(engine)/model.h $(engine)/camera.h $(engine)/rigidbody.h
+	g++ -I $(here) -c $(test)/lighting.cc
+
 wasd_movement: wasd_movement.o model.o gameobject.o helper.o camera.o rigidbody.o
 	g++ -I $(here) wasd_movement.o model.o gameobject.o helper.o camera.o rigidbody.o -o wasd_movement $(CXXFLAGS)
 
@@ -55,7 +61,7 @@ helper.o: $(engine)/helper.cc $(engine)/helper.h $(engine)/constants.h
 	g++ -I $(here) -c $(engine)/helper.cc
 
 clean:
-	$(remove) -fr *.o orbiting_star* gears* moons_and_planets* wasd_movement*
+	$(remove) -fr *.o orbiting_star* gears* moons_and_planets* wasd_movement* lighting*
 
 run:
-	./wasd_movement
+	./lighting

@@ -13,6 +13,8 @@
 #include <vector>
 #include <exception>
 
+#include "lib/glm/glm.hpp"
+#include "lib/glm/vec3.hpp"
 #include "src/engine/constants.h"
 
 namespace engine {
@@ -21,11 +23,14 @@ class Model {
  private:
   // member data
 
-  // Verticies is a vector of float vectors
+  // Verticies is a vector of floats
   std::vector<GLfloat> verticies;
 
-  // Faces is a vector of int vectors
+  // Faces is a vector of ints
   std::vector<GLubyte> faces;
+
+  // Normals is a vector of floats
+  std::vector<GLfloat> normals;
 
   // private functions
 
@@ -43,9 +48,11 @@ class Model {
   // formatted correctly and returns false otherwise
   bool addFace(std::vector<std::string> face);
 
-  // This is defined
   // empties the verticies and faces vectors
   void clear();
+
+  // calculates all the vectors based on the verticies
+  void calculateNormals();
 
  public:
   // Default Constructor

@@ -100,6 +100,24 @@ void Model::clear() {
   faces.clear();
 }
 
+// This is defined
+// calculates all the vectors based on the verticies
+void Model::calculateNormals() {
+  for (int i = 0; i < faces.size(); i+=FACE_SIZE) {
+    // std::cout << 0+faces[i] << std::endl;
+    int vertex = faces[i]*VERTEX_SIZE;
+    glm::vec3 p1(verticies[vertex], verticies[vertex+1], verticies[vertex+2]);
+    vertex = faces[i+1]*VERTEX_SIZE;
+    glm::vec3 p2(verticies[vertex], verticies[vertex+1], verticies[vertex+2]);
+    vertex = faces[i+2]*VERTEX_SIZE;
+    glm::vec3 p3(verticies[vertex], verticies[vertex+1], verticies[vertex+2]);
+    glm::vec3 normal = glm::normalize((p2-p1)*(p3-p1));
+    normals.push_back(normal.x);
+    normals.push_back(normal.y);
+    normals.push_back(normal.z);
+  }
+}
+
 // PUBLIC
 
 // Default Constructor
@@ -136,6 +154,7 @@ void Model::load(const std::string &obj_file_name) {
           }
         }
       }
+      calculateNormals();
     } catch(const std::string msg) {
       clear();
       std::cerr << msg << std::endl;
@@ -149,6 +168,8 @@ void Model::load(const std::string &obj_file_name) {
 void Model::draw() const {
   glEnableClientState(GL_VERTEX_ARRAY);
   glVertexPointer(VERTEX_SIZE, GL_FLOAT, 0, verticies.data());
+  glEnableClientState(GL_NORMAL_ARRAY);
+  glNormalPointer(GL_FLOAT, 0, normals.data());
 
   glDrawElements(GL_TRIANGLES, faces.size(), GL_UNSIGNED_BYTE, faces.data());
 }
