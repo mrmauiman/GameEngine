@@ -11,6 +11,8 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <map>
+#include <utility>
 #include <exception>
 
 #include "lib/glm/glm.hpp"
@@ -34,25 +36,34 @@ class Model {
 
   // private functions
 
-  // str is a string
+  // str is a string, sep is a character to tokenize str by, "ws" is whitespace
   // returns a vector of all items in str seperated by whitespace
-  std::vector<std::string> tokenize(std::string str);
+  std::vector<std::string> tokenize(std::string str, std::string sep = "ws");
 
   // vertex is a line that starts with v and contains vertex data
   // Adds the vertex described in vertex and returns true if the data is
   // formatted correctly and returns false otherwise
-  bool addVertex(std::vector<std::string> vertex);
+  void addVertex(std::vector<std::string> vertex);
 
   // face is a line that starts with f and contains face data
   // Adds the face described in face and returns true if the data is
   // formatted correctly and returns false otherwise
-  bool addFace(std::vector<std::string> face);
+  void addFace(std::vector<std::string> face,
+               std::map<int, std::vector<int>> * normal_map);
+
+  // normal is a line that starts with vn and contains normal data
+  // adds the normal descibed to normal_vector and returns true iff the data is
+  // formatted correctly and returns false otherwise
+  void addNormal(std::vector<std::string> normal,
+                 std::vector<glm::vec3> * normal_vector);
 
   // empties the verticies and faces vectors
   void clear();
 
-  // calculates all the vectors based on the verticies
-  void calculateNormals();
+  // normal_vector is all of the normals, normal_map is the normals sorted
+  // populates normals with correct data from normal_vector and normal_map
+  void calculateNormals(std::vector<glm::vec3> normal_vector,
+                        std::map<int, std::vector<int>> normal_map);
 
  public:
   // Default Constructor
