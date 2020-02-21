@@ -81,6 +81,9 @@ class Model {
   // renders the obj file loaded
   void draw() const;
 
+  // Calls draw()
+  void Draw() const;
+
   // returns the number of veriticies
   int getNumVerticies() const;
 

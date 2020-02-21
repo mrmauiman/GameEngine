@@ -15,6 +15,12 @@ engine=src/engine
 test=test
 here=.
 
+test1: test1.o model.o
+	g++ -I $(here) test1.o model.o -o test1 $(CXXFLAGS)
+
+test1.o: $(test)/test1.cc $(engine)/model.h
+	g++ -I $(here) -c $(test)/test1.cc
+
 lighting: lighting.o model.o camera.o rigidbody.o gameobject.o helper.o
 	g++ -I $(here) lighting.o model.o camera.o rigidbody.o gameobject.o helper.o -o lighting $(CXXFLAGS)
 
@@ -61,7 +67,7 @@ helper.o: $(engine)/helper.cc $(engine)/helper.h $(engine)/constants.h
 	g++ -I $(here) -c $(engine)/helper.cc
 
 clean:
-	$(remove) -fr *.o orbiting_star* gears* moons_and_planets* wasd_movement* lighting*
+	$(remove) -fr *.o orbiting_star* gears* moons_and_planets* wasd_movement* lighting* test1*
 
 run:
-	./lighting
+	./test1

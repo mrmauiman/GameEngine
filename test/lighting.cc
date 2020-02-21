@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
   glfwMakeContextCurrent(window);
 
   // Load Star Model
-  std::string obj_file_name = "data/star_normals.obj";
+  std::string obj_file_name = "data/snowman.obj";
   if (argc > 1) {
     obj_file_name = argv[1];
   }
@@ -84,8 +84,9 @@ int main(int argc, char **argv) {
       camera.multViewMatrix();
       // Draw The Stars
       glPushMatrix();
-        star.turn(1, glm::vec3(0.0, 1.0, 0.0), false);
+        star.turn(-1, glm::vec3(0.0, 1.0, 0.0), false);
         star.draw();
+        star.setScale(glm::vec3(0.3, 0.3, 0.3));
       glPopMatrix();
     glPopMatrix();
 

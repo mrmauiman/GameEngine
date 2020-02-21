@@ -202,6 +202,11 @@ void Model::draw() const {
   glDrawElements(GL_TRIANGLES, faces.size(), GL_UNSIGNED_BYTE, faces.data());
 }
 
+// Calls draw()
+void Model::Draw() const {
+  draw();
+}
+
 // returns the number of veriticies
 int Model::getNumVerticies() const {
   return verticies.size();
