@@ -199,7 +199,7 @@ void Model::draw() const {
   glEnableClientState(GL_NORMAL_ARRAY);
   glNormalPointer(GL_FLOAT, 0, normals.data());
 
-  glDrawElements(GL_TRIANGLES, faces.size(), GL_UNSIGNED_BYTE, faces.data());
+  glDrawElements(GL_TRIANGLES, faces.size(), GL_UNSIGNED_INT, faces.data());
 }
 
 // Calls draw()

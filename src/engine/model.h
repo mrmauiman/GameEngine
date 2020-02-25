@@ -29,7 +29,7 @@ class Model {
   std::vector<GLfloat> verticies;
 
   // Faces is a vector of ints
-  std::vector<GLubyte> faces;
+  std::vector<GLuint> faces;
 
   // Normals is a vector of floats
   std::vector<GLfloat> normals;

@@ -70,4 +70,4 @@ clean:
 	$(remove) -fr *.o orbiting_star* gears* moons_and_planets* wasd_movement* lighting* test1*
 
 run:
-	./test1
+	./lighting

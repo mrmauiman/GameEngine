@@ -36,29 +36,30 @@ int main(int argc, char **argv) {
   engine::RigidBody star(&star_md);
   engine::Camera camera(90, 0.1, 100, false);
 
-  star.setPosition(glm::vec3(0.0f, 0.0f, -2.0f));
+  star.setPosition(glm::vec3(0.0f, 0.0f, -10.0f));
 
   // Set The Clear Color (Sky Box)
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-
-  // light
-  GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
-  GLfloat mat_shininess[] = { 50.0 };
-  GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
-  glShadeModel(GL_SMOOTH);
-
-  glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
-  glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
-  glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-  glEnable(GL_LIGHTING);
-  glEnable(GL_LIGHT0);
 
   // Enable Depth
   glEnable(GL_DEPTH_TEST);
 
   // Loop until the user closes the window
   while (!glfwWindowShouldClose(window)) {
+    // light
+    GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+    GLfloat mat_shininess[] = { 90.0 };
+    GLfloat light_position[] = { 0.0, 0.0, 1.0, 0.0 };
+    GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+    glShadeModel(GL_SMOOTH);
+
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
+    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+
     // Set the rendering viewport location and dimensions
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
@@ -74,6 +75,14 @@ int main(int argc, char **argv) {
     double c_pos_y = 0.0;
     glfwGetCursorPos(window, &c_pos_x, &c_pos_y);
 
+    GLfloat x_scaler = c_pos_x/width;
+    GLfloat y_scaler = c_pos_y/height;
+    GLfloat light_ambient[] = {x_scaler, x_scaler, x_scaler, 1.0f};
+    GLfloat light_diffuse[] = {y_scaler, y_scaler, y_scaler, 1.0f};
+    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+
     // Clear the color buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -86,7 +95,6 @@ int main(int argc, char **argv) {
       glPushMatrix();
         star.turn(-1, glm::vec3(0.0, 1.0, 0.0), false);
         star.draw();
-        star.setScale(glm::vec3(0.3, 0.3, 0.3));
       glPopMatrix();
     glPopMatrix();
 
