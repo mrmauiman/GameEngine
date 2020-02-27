@@ -26,11 +26,12 @@ int main(int argc, char **argv) {
   glfwMakeContextCurrent(window);
 
   // Load Star Model
-  std::string obj_file_name = "data/snowman.obj";
+  std::string obj_file_name = "data/plane.obj";
   if (argc > 1) {
     obj_file_name = argv[1];
   }
   engine::Model star_md(obj_file_name);
+  // star_md.print();
 
   // Initialize necessary variables
   engine::RigidBody star(&star_md);
@@ -49,7 +50,7 @@ int main(int argc, char **argv) {
     // light
     GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
     GLfloat mat_shininess[] = { 90.0 };
-    GLfloat light_position[] = { 0.0, 0.0, 1.0, 0.0 };
+    GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
     GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
     glShadeModel(GL_SMOOTH);
 

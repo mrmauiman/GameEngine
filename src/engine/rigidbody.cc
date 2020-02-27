@@ -24,15 +24,15 @@ void RigidBody::draw() const {
     glScalef(scale.x, scale.y, scale.z);
 
     // Set the color matrix based on color of rigidbody
-    std::vector<GLfloat> colors;
-    for (int i = 0; i < model->getNumVerticies(); i++) {
-      colors.push_back(color.r);
-      colors.push_back(color.g);
-      colors.push_back(color.b);
-      colors.push_back(color.a);
-    }
-    glEnableClientState(GL_COLOR_ARRAY);
-    glColorPointer(COLOR_SIZE, GL_FLOAT,  0, colors.data());
+    // std::vector<GLfloat> colors;
+    // for (int i = 0; i < model->getNumVerticies(); i++) {
+    //   colors.push_back(color.r);
+    //   colors.push_back(color.g);
+    //   colors.push_back(color.b);
+    //   colors.push_back(color.a);
+    // }
+    // glEnableClientState(GL_COLOR_ARRAY);
+    // glColorPointer(COLOR_SIZE, GL_FLOAT,  0, colors.data());
 
     // Draw the model
     model->draw();

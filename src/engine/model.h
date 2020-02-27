@@ -16,7 +16,9 @@
 #include <exception>
 
 #include "lib/glm/glm.hpp"
+#include "lib/glm/vec2.hpp"
 #include "lib/glm/vec3.hpp"
+#include "lib/glm/vec4.hpp"
 #include "src/engine/constants.h"
 
 namespace engine {
@@ -25,14 +27,18 @@ class Model {
  private:
   // member data
 
-  // Verticies is a vector of floats
-  std::vector<GLfloat> verticies;
+  // Verticies is a c++ vector of vectors
+  std::vector<glm::vec4> verticies;
 
-  // Faces is a vector of ints
-  std::vector<GLuint> faces;
+  // Normals is a c++ vector of vectors
+  std::vector<glm::vec3> normals;
 
-  // Normals is a vector of floats
-  std::vector<GLfloat> normals;
+  // vertex_normal_pairs is a c++ vector of vectors
+  std::vector<glm::vec2> vertex_normal_pairs;
+
+  // Faces is a c++ vector of vectors
+  std::vector<glm::vec3> faces;
+
 
   // private functions
 
@@ -48,22 +54,15 @@ class Model {
   // face is a line that starts with f and contains face data
   // Adds the face described in face and returns true if the data is
   // formatted correctly and returns false otherwise
-  void addFace(std::vector<std::string> face,
-               std::map<int, std::vector<int>> * normal_map);
+  void addFace(std::vector<std::string> face);
 
   // normal is a line that starts with vn and contains normal data
   // adds the normal descibed to normal_vector and returns true iff the data is
   // formatted correctly and returns false otherwise
-  void addNormal(std::vector<std::string> normal,
-                 std::vector<glm::vec3> * normal_vector);
+  void addNormal(std::vector<std::string> normal);
 
   // empties the verticies and faces vectors
   void clear();
-
-  // normal_vector is all of the normals, normal_map is the normals sorted
-  // populates normals with correct data from normal_vector and normal_map
-  void calculateNormals(std::vector<glm::vec3> normal_vector,
-                        std::map<int, std::vector<int>> normal_map);
 
  public:
   // Default Constructor
@@ -87,14 +86,26 @@ class Model {
   // returns the number of veriticies
   int getNumVerticies() const;
 
+  // returns a pointer to an array containing all verticies
+  // user must call delete on the value returned when they are done using it
+  GLfloat * get_vertex_data() const;
+
+  // returns a pointer to an array containing all normals ordered to their
+  // verticies
+  // user must call delete on the value returned when they are done using it
+  GLfloat * get_normal_data() const;
+
+  // returns a pointer to an array of indicies of verticies that make up faces
+  // user must call delete on the value returned when they are done using it
+  GLuint * get_face_data() const;
+
+  void print();
+
   // delete the copy constructor
   Model(const Model& model);
 
   // delete the assignment operator
   Model& operator=(const Model& model);
-
-  // << Overload
-  friend std::ostream& operator<<(std::ostream& os, const Model& md);
 };
 }  // namespace engine
 
