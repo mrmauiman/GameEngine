@@ -2,7 +2,7 @@
  * Copyright 2020 Maui Kelley
  */
 
-#include "src/engine/camera.h"
+#include "engine/camera.h"
 
 namespace engine {
 // PUBLIC
@@ -14,13 +14,14 @@ Camera::Camera(GLfloat fov, GLfloat z_near, GLfloat z_far, bool radians) {
   if (radians) {
     fov = rad2deg(fov);
   }
+  std::cout << fov << std::endl;
   this->fov = clamp(fov, MIN_FRUSTUM_ANGLE, MAX_FRUSTUM_ANGEL);
   this->z_near = z_near;
   this->z_far = z_far;
 }
 
 // changes the camera’s field of view by angle.
-void Camera::zoom(GLfloat fov, bool radians) {
+void Camera::Zoom(GLfloat fov, bool radians) {
   if (radians) {
     fov = rad2deg(fov);
   }
@@ -30,7 +31,7 @@ void Camera::zoom(GLfloat fov, bool radians) {
 // multiplies the camera’s projection matrix, calcluated using it’s current
 // view frustum and the specified window width and height, with the current
 // matrix.
-void Camera::multProjectionMatrix(int width, int height) const {
+void Camera::MultProjectionMatrix(int width, int height) const {
   // Calculate how big the frustum near is with a field of view of fov
   float frust_size = tanf(deg2rad(fov/2.0f)) * z_near;
   float ratio = width/static_cast<float>(height);
@@ -42,14 +43,14 @@ void Camera::multProjectionMatrix(int width, int height) const {
 
 // multiplies the camera’s current view matrix, calculated usings it’s
 // current position and orientation, with the current matrix.
-void Camera::multViewMatrix() const {
+void Camera::MultViewMatrix() const {
   glm::mat4 rot_mat = glm::toMat4(orientation);
-  glMultMatrixf(value_ptr(rot_mat));
   glTranslatef(position.x, position.y, position.z);
+  glMultMatrixf(value_ptr(rot_mat));
 }
 
 // delta is the fraction of a second a frame takes
-void Camera::update(float delta) {
+void Camera::Update(float delta) {
   // Nothing to do for now
 }
 }  // namespace engine

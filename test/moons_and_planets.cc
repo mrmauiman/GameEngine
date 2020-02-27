@@ -3,7 +3,7 @@
  */
 
 #include <iostream>
-#include "src/engine/model.h"
+#include "engine/model.h"
 
 int main(int argc, char **argv) {
   // Initialize the library
@@ -62,7 +62,7 @@ int main(int argc, char **argv) {
       glPushMatrix();
         glRotatef(rotation, 0.0f, 0.0f, 1.0f);
         glScalef(0.3f, 0.3f, 0.3f);
-        md.draw();
+        md.Draw();
       glPopMatrix();
       // Create Matrix for star b
       glPushMatrix();
@@ -70,7 +70,7 @@ int main(int argc, char **argv) {
         glTranslatef(0.7f, 0.0f, 0.0f);
         glRotatef(rotation, 0.0f, 0.0f, 1.0f);
         glScalef(0.2f, 0.2f, 0.2f);
-        md.draw();
+        md.Draw();
       glPopMatrix();
       // Create Matrix for star c
       glPushMatrix();
@@ -80,7 +80,7 @@ int main(int argc, char **argv) {
         glTranslatef(0.25f, 0.0f, 0.0f);
         glRotatef(rotation, 0.0f, 0.0f, 1.0f);
         glScalef(0.05f, 0.05f, 0.05f);
-        md.draw();
+        md.Draw();
       glPopMatrix();
       // Create Matrix for star d
       glPushMatrix();
@@ -90,7 +90,7 @@ int main(int argc, char **argv) {
         glTranslatef(-0.25f, 0.0f, 0.0f);
         glRotatef(rotation, 0.0f, 0.0f, 1.0f);
         glScalef(0.05f, 0.05f, 0.05f);
-        md.draw();
+        md.Draw();
       glPopMatrix();
     glPopMatrix();
 

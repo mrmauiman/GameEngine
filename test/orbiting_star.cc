@@ -3,7 +3,7 @@
  */
 
 #include <iostream>
-#include "src/engine/model.h"
+#include "engine/model.h"
 
 int main(int argc, char **argv) {
   // Initialize the library
@@ -53,7 +53,7 @@ int main(int argc, char **argv) {
     glScalef(0.25f, 0.25f, 0.25f);
 
     // Draw the star
-    md.draw();
+    md.Draw();
 
     // Swap front and back buffers
     glfwSwapBuffers(window);

@@ -3,7 +3,7 @@
  */
 
 #include <iostream>
-#include "src/engine/model.h"
+#include "engine/model.h"
 
 int main(int argc, char **argv) {
   // Initialize the library
@@ -46,34 +46,30 @@ int main(int argc, char **argv) {
     glMatrixMode(GL_MODELVIEW);
 
     // Gear 1 Transformations
-    g1.setColor(1.0f, 1.0f, 1.0f, 1.0f);
     glLoadIdentity();
     glRotatef(rotation, 0.0f, 0.0f, 1.0f);
-    g1.draw();
+    g1.Draw();
 
     // Gear 2 Transformations
-    g1.setColor(1.0f, 0.0f, 0.0f, 1.0f);
     glLoadIdentity();
     glRotatef(90, 0.0f, 0.0f, 1.0f);
     glTranslatef(1.2f, 0.0f, 0.0f);
     glRotatef(-rotation, 0.0f, 0.0f, 1.0f);
-    g1.draw();
+    g1.Draw();
 
     // Gear 3 Transformations
-    g1.setColor(0.0f, 1.0f, 0.0f, 1.0f);
     glLoadIdentity();
     glRotatef(90+120, 0.0f, 0.0f, 1.0f);
     glTranslatef(1.2f, 0.0f, 0.0f);
     glRotatef(-rotation+12, 0.0f, 0.0f, 1.0f);
-    g1.draw();
+    g1.Draw();
 
     // Gear 4 Transformations
-    g1.setColor(0.0f, 0.0f, 1.0f, 1.0f);
     glLoadIdentity();
     glRotatef(90+240, 0.0f, 0.0f, 1.0f);
     glTranslatef(1.2f, 0.0f, 0.0f);
     glRotatef(-rotation-12, 0.0f, 0.0f, 1.0f);
-    g1.draw();
+    g1.Draw();
 
     // Swap front and back buffers
     glfwSwapBuffers(window);

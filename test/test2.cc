@@ -8,6 +8,8 @@
 #include "GLFW/glfw3.h"
 
 #include "engine/model.h"
+#include "engine/rigid_body.h"
+#include "engine/camera.h"
 
 int main() {
   // Initialize GLFW
@@ -16,53 +18,52 @@ int main() {
     exit(EXIT_FAILURE);
   }
 
-  // Create a windowed mode window and its OpenGL context
+  // Create window
   GLFWwindow* window = glfwCreateWindow(640, 480, "Test", NULL, NULL);
   if (!window) {
     glfwTerminate();
     exit(EXIT_FAILURE);
   }
-
-  // Make the window's context current
   glfwMakeContextCurrent(window);
 
-  // Clear the color buffer to black
+  // Initialize OpenGL
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
-
-  // Enable depth testing
   glEnable(GL_DEPTH_TEST);
 
-  // Create and load model
-  engine::Model model("data/model1.obj");
+  // create rigid body and camera
+  engine::Model model("data/star.obj");
+  engine::RigidBody rigidBody(&model);
+  engine::Camera camera(35.0f, 0.1f, 10.0f);
+  camera.LookAt(glm::vec3(0.0f, 0.0f, -5.0f),   // eye
+                glm::vec3(0.0f, 0.0f, 0.0f),   // center
+                glm::vec3(0.0f, 1.0f, 0.0f));  // up
 
   // Loop until the user closes the window
   while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
          !glfwWindowShouldClose(window)) {
-    // Set the rendering viewport location and dimensions
+    // Set the rendering viewport
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
-
-    // Clear the color and depth buffers before drawing
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Select and setup the projection matrix
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    float ratio = width / static_cast<float>(height);
-    glOrtho(-ratio, ratio, -1.0f, 1.0f, 1.0f, -1.0f);
+    camera.MultProjectionMatrix(width, height);
 
-    // Select and setup the modelview matrix
+    // Select and setup the view matrix
     glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
+    glPushMatrix();
+    camera.MultViewMatrix();
 
-    // Draw model
-    model.Draw();
+    // Rotate and draw rigid body
+    rigidBody.Turn(10.0f, glm::vec3(0.0f, 1.0f, 0.0f));  // 10 deg around y axis
+    rigidBody.Draw();
 
-    // Swap front and back buffers
+    // Prepare for next frame
+    glPopMatrix();
     glfwSwapBuffers(window);
-
-    // Poll for and process events
     glfwPollEvents();
   }
 

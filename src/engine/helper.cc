@@ -2,7 +2,7 @@
  * Copyright 2020 Maui Kelley
  */
 
-#include "src/engine/helper.h"
+#include "engine/helper.h"
 
 namespace engine {
 

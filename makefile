@@ -1,73 +1,53 @@
-ifeq ($(OS), Windows_NT)
-	CXXFLAGS=-lglfw3dll -lopengl32 -lgdi32 -static-libstdc++ -static-libgcc
-	remove=del
+ifeq ($(OS),Windows_NT)
+	CXXFLAGS=-lglfw3 -lopengl32 -lgdi32
+	CFLAGS=-std=c++11 -Isrc -Ilib
+	MKDIR=md
+	rm=rd /s /q
 else
-	remove=rm
 	UNAME=$(shell uname)
 	ifeq ($(UNAME),Darwin)
 		CXXFLAGS=-framework OpenGL -lglfw
+		CFLAGS=-Wno-deprecated-declarations -std=c++11 -Isrc -Ilib
 	else
 		CXXFLAGS=-lglfw -lGL
+		CFLAGS=-std=c++11 -Isrc -Ilib
 	endif
+	MKDIR=mkdir -p
+	RM=rm -fr
 endif
 
-engine=src/engine
-test=test
-here=.
+tests := $(patsubst test/%.cc,bin/%,$(wildcard test/*.cc))
 
-test1: test1.o model.o
-	g++ -I $(here) test1.o model.o -o test1 $(CXXFLAGS)
+all: test
 
-test1.o: $(test)/test1.cc $(engine)/model.h
-	g++ -I $(here) -c $(test)/test1.cc
+build:
+	$(MKDIR) build
 
-lighting: lighting.o model.o camera.o rigidbody.o gameobject.o helper.o
-	g++ -I $(here) lighting.o model.o camera.o rigidbody.o gameobject.o helper.o -o lighting $(CXXFLAGS)
+bin:
+	$(MKDIR) bin
 
-lighting.o: $(test)/lighting.cc $(engine)/model.h $(engine)/camera.h $(engine)/rigidbody.h
-	g++ -I $(here) -c $(test)/lighting.cc
+test: $(tests)
 
-wasd_movement: wasd_movement.o model.o gameobject.o helper.o camera.o rigidbody.o
-	g++ -I $(here) wasd_movement.o model.o gameobject.o helper.o camera.o rigidbody.o -o wasd_movement $(CXXFLAGS)
+bin/%: build/%.o build/model.o build/game_object.o build/camera.o build/rigid_body.o build/helper.o | bin
+	g++ $< build/model.o build/game_object.o build/camera.o build/rigid_body.o build/helper.o -o $@ $(CXXFLAGS)
 
-wasd_movement.o: $(test)/wasd_movement.cc $(engine)/model.h $(engine)/gameobject.h $(engine)/helper.h $(engine)/constants.h $(engine)/camera.h $(engine)/rigidbody.h
-	g++ -I $(here) -c $(test)/wasd_movement.cc
+build/%.o: test/%.cc | build
+	g++ -c $< -o $@ $(CFLAGS)
 
-moons_and_planets: moons_and_planets.o model.o
-	g++ -I $(here) moons_and_planets.o model.o -o moons_and_planets $(CXXFLAGS)
+build/model.o: src/engine/model.cc src/engine/model.h | build
+	g++ -c src/engine/model.cc -o build/model.o $(CFLAGS)
 
-moons_and_planets.o: $(test)/moons_and_planets.cc $(engine)/model.h
-	g++ -I $(here) -c $(test)/moons_and_planets.cc
+build/game_object.o: src/engine/game_object.cc src/engine/game_object.h src/engine/helper.h | build
+	g++ -c src/engine/game_object.cc -o build/game_object.o $(CFLAGS)
 
-gears: gears.o model.o
-	g++ -I $(here) gears.o model.o -o gears $(CXXFLAGS)
+build/camera.o: src/engine/camera.cc src/engine/camera.h src/engine/helper.h build/game_object.o | build
+	g++ -c src/engine/camera.cc -o build/camera.o $(CFLAGS)
 
-gears.o: $(test)/gears.cc $(engine)/model.h
-	g++ -I $(here) -c $(test)/gears.cc
+build/rigid_body.o: src/engine/rigid_body.cc src/engine/rigid_body.h build/game_object.o build/model.o | build
+	g++ -c src/engine/rigid_body.cc -o build/rigid_body.o $(CFLAGS)
 
-orbiting_star: orbiting_star.o model.o
-	g++ -I $(here) orbiting_star.o model.o -o orbiting_star $(CXXFLAGS)
-
-orbiting_star.o: $(test)/orbiting_star.cc $(engine)/model.h
-	g++ -I $(here) -c $(test)/orbiting_star.cc
-
-model.o: $(engine)/model.cc $(engine)/model.h $(engine)/constants.h
-	g++ -I $(here) -c $(engine)/model.cc
-
-gameobject.o: $(engine)/gameobject.cc $(engine)/gameobject.h $(engine)/constants.h $(engine)/helper.h
-	g++ -I $(here) -c $(engine)/gameobject.cc
-
-camera.o: $(engine)/camera.cc $(engine)/camera.h $(engine)/gameobject.h $(engine)/constants.h $(engine)/helper.h
-	g++ -I $(here) -c $(engine)/camera.cc
-
-rigidbody.o: $(engine)/rigidbody.cc $(engine)/rigidbody.h $(engine)/gameobject.h $(engine)/model.h $(engine)/helper.h
-	g++ -I $(here) -c $(engine)/rigidbody.cc
-
-helper.o: $(engine)/helper.cc $(engine)/helper.h $(engine)/constants.h
-	g++ -I $(here) -c $(engine)/helper.cc
+build/helper.o: src/engine/helper.cc src/engine/helper.h | build
+	g++ -c src/engine/helper.cc -o build/helper.o $(CFLAGS)
 
 clean:
-	$(remove) -fr *.o orbiting_star* gears* moons_and_planets* wasd_movement* lighting* test1*
-
-run:
-	./lighting
+	$(RM) build bin

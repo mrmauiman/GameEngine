@@ -9,13 +9,13 @@
 #include <vector>
 #include <random>
 
-#include "lib/glm/gtc/quaternion.hpp"
-#include "lib/glm/vec3.hpp"
-#include "src/engine/model.h"
-#include "src/engine/constants.h"
-#include "src/engine/helper.h"
-#include "src/engine/camera.h"
-#include "src/engine/rigidbody.h"
+#include "glm/gtc/quaternion.hpp"
+#include "glm/vec3.hpp"
+#include "engine/model.h"
+#include "engine/constants.h"
+#include "engine/helper.h"
+#include "engine/camera.h"
+#include "engine/rigid_body.h"
 
 int main(int argc, char **argv) {
   // Seed the random
@@ -73,8 +73,8 @@ int main(int argc, char **argv) {
     // Create Stars
     engine::RigidBody * star = new engine::RigidBody(&star_md);
     glm::vec3 p = {x, 0.0f, z};
-    star->setPosition(p);
-    star->setColor(1, 0, 0, 1);
+    star->SetPosition(p);
+    star->SetColor(1, 0, 0, 1);
     stars.push_back(star);
   }
 
@@ -89,21 +89,21 @@ int main(int argc, char **argv) {
       engine::RigidBody * tile = new engine::RigidBody(&floor_md);
       glm::vec3 p = {x, -1.5f, z};
       glm::vec3 scale = {1.0f, 0.1f, 1.0f};
-      tile->setPosition(p);
-      tile->setScale(scale);
+      tile->SetPosition(p);
+      tile->SetScale(scale);
 
       // Determine Colors
       if (i%2 == 0) {
         if (j%2 == 0) {
-          tile->setColor(0.2f, 0.2f, 0.2f, 1.0f);
+          tile->SetColor(0.2f, 0.2f, 0.2f, 1.0f);
         } else {
-          tile->setColor(0.5f, 0.5f, 0.5f, 1.0f);
+          tile->SetColor(0.5f, 0.5f, 0.5f, 1.0f);
         }
       } else {
         if (j%2 == 0) {
-          tile->setColor(0.5f, 0.5f, 0.5f, 1.0f);
+          tile->SetColor(0.5f, 0.5f, 0.5f, 1.0f);
         } else {
-          tile->setColor(0.2f, 0.2f, 0.2f, 1.0f);
+          tile->SetColor(0.2f, 0.2f, 0.2f, 1.0f);
         }
       }
 
@@ -135,7 +135,7 @@ int main(int argc, char **argv) {
     }
 
     // Move The Camera
-    camera.move({h_input*movespeed, p_input*movespeed, v_input*movespeed});
+    camera.Move({h_input*movespeed, p_input*movespeed, v_input*movespeed});
 
     // Set the rendering viewport location and dimensions
     int width, height;
@@ -145,7 +145,7 @@ int main(int argc, char **argv) {
     // Create The Camera Frustum
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    camera.multProjectionMatrix(width, height);
+    camera.MultProjectionMatrix(width, height);
 
     // Check if we have the cursor
     if (cursor_captured) {
@@ -168,9 +168,9 @@ int main(int argc, char **argv) {
 
       // Turn the camera
       glm::vec3 zero_axis = {0.0f, 0.0f, -1.0f};
-      camera.setOrientation(0.0f, zero_axis);
-      camera.turn(camera_x_angle, x_axis, false);
-      camera.turn(camera_y_angle, y_axis, false);
+      camera.SetOrientation(0.0f, zero_axis);
+      camera.Turn(camera_x_angle, x_axis, false);
+      camera.Turn(camera_y_angle, y_axis, false);
     } else {
       glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
     }
@@ -182,18 +182,18 @@ int main(int argc, char **argv) {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
       // Transform The Camera
-      camera.multViewMatrix();
+      camera.MultViewMatrix();
       // Draw The Stars
       for (int i = 0; i < num_stars; i++) {
         glPushMatrix();
-          stars[i]->draw();
+          stars[i]->Draw();
         glPopMatrix();
       }
       // Draw The Floor
       for (int i = 0; i < plane_size; i++) {
         for (int j = 0; j < plane_size; j++) {
           glPushMatrix();
-            floors[(i*plane_size)+j]->draw();
+            floors[(i*plane_size)+j]->Draw();
           glPopMatrix();
         }
       }

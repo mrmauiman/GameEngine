@@ -4,10 +4,10 @@
 
 #include <iostream>
 
-#include "lib/glm/vec3.hpp"
-#include "src/engine/model.h"
-#include "src/engine/camera.h"
-#include "src/engine/rigidbody.h"
+#include "glm/vec3.hpp"
+#include "engine/model.h"
+#include "engine/camera.h"
+#include "engine/rigid_body.h"
 
 int main(int argc, char **argv) {
   // Initialize the library
@@ -31,13 +31,12 @@ int main(int argc, char **argv) {
     obj_file_name = argv[1];
   }
   engine::Model star_md(obj_file_name);
-  // star_md.print();
 
   // Initialize necessary variables
   engine::RigidBody star(&star_md);
   engine::Camera camera(90, 0.1, 100, false);
 
-  star.setPosition(glm::vec3(0.0f, 0.0f, -10.0f));
+  star.SetPosition(glm::vec3(0.0f, 0.0f, -10.0f));
 
   // Set The Clear Color (Sky Box)
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -69,7 +68,7 @@ int main(int argc, char **argv) {
     // Create The Camera Frustum
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    camera.multProjectionMatrix(width, height);
+    camera.MultProjectionMatrix(width, height);
 
     // Get the mouse position
     double c_pos_x = 0.0;
@@ -91,11 +90,11 @@ int main(int argc, char **argv) {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
       // Transform The Camera
-      camera.multViewMatrix();
+      camera.MultViewMatrix();
       // Draw The Stars
       glPushMatrix();
-        star.turn(-1, glm::vec3(0.0, 1.0, 0.0), false);
-        star.draw();
+        star.Turn(-1, glm::vec3(0.0, 1.0, 0.0), false);
+        star.Draw();
       glPopMatrix();
     glPopMatrix();
 

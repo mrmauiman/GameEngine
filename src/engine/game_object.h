@@ -9,12 +9,12 @@
 #include <GLFW/glfw3.h>
 #include <iostream>
 
-#include "lib/glm/gtx/quaternion.hpp"
-#include "lib/glm/vec3.hpp"
-#include "lib/glm/gtc/type_ptr.hpp"
-#include "lib/glm/mat4x4.hpp"
-#include "src/engine/constants.h"
-#include "src/engine/helper.h"
+#include "glm/gtx/quaternion.hpp"
+#include "glm/vec3.hpp"
+#include "glm/gtc/type_ptr.hpp"
+#include "glm/mat4x4.hpp"
+#include "engine/constants.h"
+#include "engine/helper.h"
 
 namespace engine {
 
@@ -27,7 +27,7 @@ class GameObject {
   // angle and axis describe an angle axis and radians is whether angle is
   // radians, by default this is true
   // returns a quaternion that represents the axis angle
-  glm::quat axisToQuat(float angle, glm::vec3 axis, bool radians);
+  glm::quat AxisToQuat(float angle, glm::vec3 axis, bool radians);
 
  public:
   // Default Constructor
@@ -35,47 +35,47 @@ class GameObject {
 
   // position is the new position
   // sets this.position to position
-  void setPosition(glm::vec3 position);
+  void SetPosition(glm::vec3 position);
 
   // orientation is the new orientation
   // sets this.orientation to orientation
-  void setOrientation(glm::quat orientation);
+  void SetOrientation(glm::quat orientation);
 
   // angle and axis describe an angle axis and radians is whether angle is
   // radians, by default this is true
   // sets this.orientation to be a quaternion representing the angle axis
-  void setOrientation(float angle, glm::vec3 axis, bool radians = true);
+  void SetOrientation(float angle, glm::vec3 axis, bool radians = false);
 
   // scale is the new scale
   // sets this.scale to scale
-  void setScale(glm::vec3 scale);
+  void SetScale(glm::vec3 scale);
 
   // returns the position
-  glm::vec3 getPosition();
+  glm::vec3 GetPosition();
 
   // returns the orientation
-  glm::quat getOrientation();
+  glm::quat GetOrientation();
 
   // returns the scale
-  glm::vec3 getScale();
+  glm::vec3 GetScale();
 
   // changes the game object’s current position by moving it relative to its
   // current position and orientation by the specified vector
-  void move(glm::vec3 distance);
+  void Move(glm::vec3 distance);
 
   // changes the game object’s current orientation by turning it relative to
   // its current orientation by the specified angle around the specified vector
-  void turn(GLfloat angle, glm::vec3 axis, bool radians = true);
+  void Turn(GLfloat angle, glm::vec3 axis, bool radians = false);
 
   // changes the game object’s current position and orientation. The position
   // should be set to the specified eye position. The orientation should be set
   // so that it “looks at” the specified center position with the specified up
   // vector. A game object “looks at” a point by orienting so that the negative
   // z-axis points from the eye position to the center position.
-  void lookAt(glm::vec3 eye, glm::vec3 center, glm::vec3 up);
+  void LookAt(glm::vec3 eye, glm::vec3 center, glm::vec3 up);
 
   // Virtual Function Update
-  virtual void update(float delta) = 0;
+  virtual void Update(float delta) = 0;
 };
 }  // namespace engine
 
