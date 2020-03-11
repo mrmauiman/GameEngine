@@ -14,7 +14,6 @@ Camera::Camera(GLfloat fov, GLfloat z_near, GLfloat z_far, bool radians) {
   if (radians) {
     fov = rad2deg(fov);
   }
-  std::cout << fov << std::endl;
   this->fov = clamp(fov, MIN_FRUSTUM_ANGLE, MAX_FRUSTUM_ANGEL);
   this->z_near = z_near;
   this->z_far = z_far;
@@ -44,9 +43,9 @@ void Camera::MultProjectionMatrix(int width, int height) const {
 // multiplies the camera’s current view matrix, calculated usings it’s
 // current position and orientation, with the current matrix.
 void Camera::MultViewMatrix() const {
-  glm::mat4 rot_mat = glm::toMat4(orientation);
-  glTranslatef(position.x, position.y, position.z);
+  glm::mat4 rot_mat = glm::toMat4(glm::inverse(orientation));
   glMultMatrixf(value_ptr(rot_mat));
+  glTranslatef(position.x, position.y, position.z);
 }
 
 // delta is the fraction of a second a frame takes

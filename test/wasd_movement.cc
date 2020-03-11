@@ -167,7 +167,7 @@ int main(int argc, char **argv) {
       glm::vec3 x_axis = {1.0f, 0.0f, 0.0f};
 
       // Turn the camera
-      glm::vec3 zero_axis = {0.0f, 0.0f, -1.0f};
+      glm::vec3 zero_axis = {0.0f, 0.0f, 1.0f};
       camera.SetOrientation(0.0f, zero_axis);
       camera.Turn(camera_x_angle, x_axis, false);
       camera.Turn(camera_y_angle, y_axis, false);

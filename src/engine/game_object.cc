@@ -88,7 +88,7 @@ namespace engine {
   // vector. A game object “looks at” a point by orienting so that the negative
   // z-axis points from the eye position to the center position.
   void GameObject::LookAt(glm::vec3 eye, glm::vec3 center, glm::vec3 up) {
-    glm::mat4 rot_mat = glm::lookAt(eye, center, up);
+    glm::mat4 rot_mat = glm::inverse(glm::lookAt(eye, center, up));
     orientation = glm::quat_cast(rot_mat);
     SetPosition(eye);
   }

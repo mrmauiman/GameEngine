@@ -37,7 +37,9 @@ int main() {
   camera.LookAt(glm::vec3(0.0f, 0.0f, -5.0f),   // eye
                 glm::vec3(0.0f, 0.0f, 0.0f),   // center
                 glm::vec3(0.0f, 1.0f, 0.0f));  // up
-
+  rigidBody.Turn(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
+  rigidBody.Move(glm::vec3(0.0, 0.0, -1.0));
+  rigidBody.Turn(-90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
   // Loop until the user closes the window
   while (glfwGetKey(window, GLFW_KEY_ESCAPE) != GLFW_PRESS &&
          !glfwWindowShouldClose(window)) {
