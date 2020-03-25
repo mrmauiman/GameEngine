@@ -72,7 +72,7 @@ namespace engine {
   // changes the game object’s current position by moving it relative to its
   // current position and orientation by the specified vector
   void GameObject::Move(glm::vec3 distance) {
-    position = position + (distance * orientation);
+    position = position + (orientation * distance);
   }
 
   // changes the game object’s current orientation by turning it relative to
@@ -88,9 +88,9 @@ namespace engine {
   // vector. A game object “looks at” a point by orienting so that the negative
   // z-axis points from the eye position to the center position.
   void GameObject::LookAt(glm::vec3 eye, glm::vec3 center, glm::vec3 up) {
+    SetPosition(eye);
     glm::mat4 rot_mat = glm::inverse(glm::lookAt(eye, center, up));
     orientation = glm::quat_cast(rot_mat);
-    SetPosition(eye);
   }
 
 }  // namespace engine

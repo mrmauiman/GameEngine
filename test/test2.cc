@@ -34,9 +34,10 @@ int main() {
   engine::Model model("data/star.obj");
   engine::RigidBody rigidBody(&model);
   engine::Camera camera(35.0f, 0.1f, 10.0f);
-  camera.LookAt(glm::vec3(0.0f, 0.0f, -5.0f),   // eye
+  camera.LookAt(glm::vec3(0.0f, 0.0f, 5.0f),   // eye
                 glm::vec3(0.0f, 0.0f, 0.0f),   // center
                 glm::vec3(0.0f, 1.0f, 0.0f));  // up
+  // camera.Move(glm::vec3(0.0f, 0.0f, -10.0f));
   rigidBody.Turn(90.0f, glm::vec3(0.0f, 1.0f, 0.0f));
   rigidBody.Move(glm::vec3(0.0, 0.0, -1.0));
   rigidBody.Turn(-90.0f, glm::vec3(0.0f, 1.0f, 0.0f));

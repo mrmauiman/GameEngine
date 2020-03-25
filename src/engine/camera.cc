@@ -43,9 +43,11 @@ void Camera::MultProjectionMatrix(int width, int height) const {
 // multiplies the camera’s current view matrix, calculated usings it’s
 // current position and orientation, with the current matrix.
 void Camera::MultViewMatrix() const {
+  glm::vec3 axis = glm::axis(orientation);
   glm::mat4 rot_mat = glm::toMat4(glm::inverse(orientation));
+  axis = glm::axis(glm::inverse(orientation));
   glMultMatrixf(value_ptr(rot_mat));
-  glTranslatef(position.x, position.y, position.z);
+  glTranslatef(-position.x, -position.y, -position.z);
 }
 
 // delta is the fraction of a second a frame takes
