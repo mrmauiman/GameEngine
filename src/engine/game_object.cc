@@ -45,7 +45,7 @@ namespace engine {
   // radians, by default this is true
   // sets this.orientation to be a quaternion representing the angle axis
   void GameObject::SetOrientation(float angle, glm::vec3 axis, bool radians) {
-    orientation = AxisToQuat(angle, axis, radians);
+    SetOrientation(AxisToQuat(angle, axis, radians));
   }
 
   // scale is the new scale
@@ -72,14 +72,14 @@ namespace engine {
   // changes the game object’s current position by moving it relative to its
   // current position and orientation by the specified vector
   void GameObject::Move(glm::vec3 distance) {
-    position = position + (orientation * distance);
+    SetPosition(position + (orientation * distance));
   }
 
   // changes the game object’s current orientation by turning it relative to
   // its current orientation by the specified angle around the specified vector
   void GameObject::Turn(GLfloat angle, glm::vec3 axis, bool radians) {
     glm::quat rotate_by = AxisToQuat(angle, axis, radians);
-    orientation = orientation * rotate_by;
+    SetOrientation(orientation * rotate_by);
   }
 
   // changes the game object’s current position and orientation. The position
@@ -90,7 +90,7 @@ namespace engine {
   void GameObject::LookAt(glm::vec3 eye, glm::vec3 center, glm::vec3 up) {
     SetPosition(eye);
     glm::mat4 rot_mat = glm::inverse(glm::lookAt(eye, center, up));
-    orientation = glm::quat_cast(rot_mat);
+    SetOrientation(glm::quat_cast(rot_mat));
   }
 
 }  // namespace engine
