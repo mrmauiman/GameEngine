@@ -14,7 +14,12 @@ namespace engine {
 // respectively, Position set to the origin, Spot direction set down the
 // negative z axis, light is active, or 'on'.
 void Light::SetDefaults(float r, float g, float b) {
-  light = GL_LIGHT0;
+  try {
+    light = NextAvailableLight();
+  } catch (const char* msg) {
+    cout << msg << endl;
+    exit(0);  // An error occured stop the program
+  }
   GLfloat ambient[] = {0.0f, 0.0f, 0.0f, 1.0f};
   GLfloat color[] = {r, g, b, 1.0f};
 
@@ -30,8 +35,23 @@ void Light::SetDefaults(float r, float g, float b) {
   SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
   SetOrientation(0.0f, glm::vec3(0.0f, 0.0f, -1.0f));
 
-  active = true;
   glEnable(light);
+}
+
+// returns the GLenum of the next available light and throws an exception if all
+// 8 are in use
+GLenum Light::NextAvailableLight() {
+  // If a light has a diffuse alpha of zero we will asume it isn't in use
+  GLfloat diffuse[NUM_DIFFUSE_PARAMS];
+  GLenum lights[] = {GL_LIGHT0, GL_LIGHT1, GL_LIGHT2, GL_LIGHT3, GL_LIGHT4,
+                     GL_LIGHT5, GL_LIGHT6, GL_LIGHT7};
+  for (int i = 0; i < MAX_LIGHTS; i++) {
+    glGetLight(lights[i], GL_DIFFUSE, diffuse);
+    if (diffuse[DIFFUSE_ALPHA] == 0) {
+      return lights[i];
+    }
+  }
+  throw "ERROR: All 8 lights are in use.";
 }
 
 // PUBLIC
@@ -52,7 +72,9 @@ Light::Light(float r, float g, float b) {
 // Deconstructor
 // Disables the set light
 Light::~Light() {
-  if (active) {
+  GLfloat blank[] = {0.0, 0.0, 0.0, 0.0};
+  glLightfv(light, GL_DIFFUSE, blank);
+  if (glIsEnabled(light)) {
     glDisable(light);
   }
 }
@@ -82,8 +104,7 @@ void Light::SetAttenuation(float constant, float linear, float quadratic) {
 
 // Sets whether the light is on
 void Light::SetActivation(bool activate) {
-  active = activate;
-  if (active) {
+  if (activate) {
     glEnable(light);
   } else {
     glDisable(light);

@@ -6,6 +6,7 @@
  */
 
 #include "game_object.h"
+#include "constants.h"
 #include "glm/gtx/quaternion.hpp"
 #include "glm/vec3.hpp"
 
@@ -14,7 +15,6 @@ namespace engine {
 class Camera : public GameObject {
  private:
   GLenum light;
-  bool active;
 
   // r, g, and b define the color of the Light
   // Creates a light with ambient light turned off, diffuse and specular Light
@@ -23,6 +23,10 @@ class Camera : public GameObject {
   // respectively, Position set to the origin, Spot direction set down the
   // negative z axis, light is active, or 'on'.
   void SetDefaults(float r, float g, float b);
+
+  // returns the GLenum of the next available light and throws an exception if all
+  // 8 are in use
+  GLenum NextAvailableLight();
 
  public:
   // Default Constructor
