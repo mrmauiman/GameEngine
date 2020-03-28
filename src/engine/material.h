@@ -50,7 +50,6 @@ class Material {
 
   // shininess is the specular exponent of range 0-128
   void SetShininess(float shininess);
-
 };
 
 }  // namespace engine

@@ -37,6 +37,10 @@ class GameObject {
   // sets this.position to position
   void SetPosition(glm::vec3 position);
 
+  // x, y, and z describe a location
+  // sets this.position to x, y, z
+  void SetPosition(float x, float y, float z);
+
   // orientation is the new orientation
   // sets this.orientation to orientation
   void SetOrientation(glm::quat orientation);

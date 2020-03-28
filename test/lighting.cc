@@ -37,7 +37,7 @@ int main(int argc, char **argv) {
   engine::RigidBody star(&star_md);
   engine::Camera camera(90, 0.1, 100, false);
 
-  star.SetPosition(glm::vec3(0.0f, 0.0f, -2.0f));
+  star.SetPosition(0.0f, 0.0f, -2.0f);
 
   // Set The Clear Color (Sky Box)
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);

@@ -16,7 +16,7 @@ else
 	RM=rm -fr
 endif
 
-tests := $(patsubst test/%.cc,bin/%,$(wildcard test/lighting.cc))
+tests := $(patsubst test/%.cc,bin/%,$(wildcard test/test3.cc))
 
 all: test
 
@@ -49,7 +49,7 @@ build/rigid_body.o: src/engine/rigid_body.cc src/engine/rigid_body.h build/game_
 build/helper.o: src/engine/helper.cc src/engine/helper.h | build
 	g++ -c src/engine/helper.cc -o build/helper.o $(CFLAGS)
 
-build/light.o: src/engine/light.cc src/engine/light.h | build
+build/light.o: src/engine/light.cc src/engine/light.h build/game_object.o | build
 	g++ -c src/engine/light.cc -o build/light.o $(CFLAGS)
 
 build/material.o: src/engine/material.cc src/engine/material.h | build

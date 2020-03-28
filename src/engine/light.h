@@ -67,6 +67,10 @@ class Light : public GameObject {
   // Override GameObject SetPosition
   void SetPosition(glm::vec3 position);
 
+  // x, y, and z describe a location
+  // sets this.position to x, y, z
+  void SetPosition(float x, float y, float z);
+
   // Override GameObject SetOrientation
   void SetOrientation(glm::quat orientation);
 

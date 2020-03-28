@@ -150,7 +150,6 @@ void Model::AddMaterials(std::string mat_file) {
             try {
               mat_name = tokens[1];
               materials[mat_name] = engine::Material();
-              std::cout << materials.size() << std::endl;
             } catch (std::exception& e) {
               throw "new materials must have a name";
             }

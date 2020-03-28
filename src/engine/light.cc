@@ -51,6 +51,7 @@ int Light::NextAvailableLight() {
 // Calls SetDefaults with white
 Light::Light() {
   SetDefaults(1.0f, 1.0f, 1.0f);
+  glEnable(GL_LIGHTING);
 }
 
 // Constructor
@@ -58,6 +59,7 @@ Light::Light() {
 // calls SetDefaults with the color
 Light::Light(float r, float g, float b) {
   SetDefaults(r, g, b);
+  glEnable(GL_LIGHTING);
 }
 
 // Deconstructor
@@ -118,6 +120,12 @@ void Light::SetPosition(glm::vec3 position) {
     GLfloat pos[] = {position.x, position.y, position.z, 1.0f};
     glLightfv(lights[light], GL_POSITION, pos);
   }
+}
+
+// x, y, and z describe a location
+// sets this.position to x, y, z
+void Light::SetPosition(float x, float y, float z) {
+  GameObject::SetPosition(x, y, z);
 }
 
 // Override GameObject SetOrientation

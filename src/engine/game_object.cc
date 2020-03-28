@@ -35,6 +35,12 @@ namespace engine {
     this->position = position;
   }
 
+  // x, y, and z describe a location
+  // sets this.position to x, y, z
+  void GameObject::SetPosition(float x, float y, float z) {
+    SetPosition(glm::vec3(x, y, z));
+  }
+
   // orientation is the new orientation
   // sets this.orientation to orientation
   void GameObject::SetOrientation(glm::quat orientation) {
