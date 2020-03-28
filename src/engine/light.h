@@ -5,16 +5,21 @@
  * Copyright 2020 Maui Kelley
  */
 
-#include "game_object.h"
-#include "constants.h"
+#include <string>
+#include "engine/game_object.h"
+#include "engine/constants.h"
 #include "glm/gtx/quaternion.hpp"
 #include "glm/vec3.hpp"
 
 namespace engine {
 
-class Camera : public GameObject {
+class Light : public GameObject {
  private:
-  GLenum light;
+  int light;
+
+  // This will keep track of available lights
+  static GLenum lights[];
+  static bool used_lights[];
 
   // r, g, and b define the color of the Light
   // Creates a light with ambient light turned off, diffuse and specular Light
@@ -24,9 +29,8 @@ class Camera : public GameObject {
   // negative z axis, light is active, or 'on'.
   void SetDefaults(float r, float g, float b);
 
-  // returns the GLenum of the next available light and throws an exception if all
-  // 8 are in use
-  GLenum NextAvailableLight();
+  // returns the index of the next available light and -1 if all 8 are in use
+  int NextAvailableLight();
 
  public:
   // Default Constructor
@@ -66,8 +70,10 @@ class Camera : public GameObject {
   // Override GameObject SetOrientation
   void SetOrientation(glm::quat orientation);
 
+  // delta is the fraction of a second a frame takes
+  void Update(float delta);
 };
 
 }  // namespace engine
 
- #endif  // SRC_ENGINE_LIGHT_H_
+#endif  // SRC_ENGINE_LIGHT_H_

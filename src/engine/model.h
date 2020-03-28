@@ -11,12 +11,14 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <map>
 #include <exception>
 
 #include "glm/glm.hpp"
 #include "glm/vec2.hpp"
 #include "glm/vec3.hpp"
 #include "glm/vec4.hpp"
+#include "engine/material.h"
 #include "engine/constants.h"
 
 namespace engine {
@@ -36,6 +38,16 @@ class Model {
 
   // Faces is a c++ vector of vectors
   std::vector<glm::vec3> faces;
+
+  // objects is a map that matches material names to groups of faces
+  std::map<std::string, std::vector<glm::vec3>> objects;
+
+  // materials is a map that matches material names to materials
+  std::map<std::string, engine::Material> materials;
+
+  // current_material is the material to assign to any face read in
+  std::string current_material;
+
 
 
   // private functions
@@ -59,6 +71,10 @@ class Model {
   // formatted correctly and returns false otherwise
   void AddNormal(std::vector<std::string> normal);
 
+  // mat_file is the name of a material library
+  // adds all materials described in mat_file to materials
+  void AddMaterials(std::string mat_file);
+
   // empties the verticies and faces vectors
   void Clear();
 
@@ -71,9 +87,10 @@ class Model {
   // user must call delete on the value returned when they are done using it
   GLfloat * GetNormalData() const;
 
+  // material name is the material the faces we want is associated with
   // returns a pointer to an array of indicies of verticies that make up faces
   // user must call delete on the value returned when they are done using it
-  GLuint * GetFaceData() const;
+  GLuint * GetFaceData(const std::string material_name) const;
 
  public:
   // Default Constructor

@@ -1,0 +1,22 @@
+# Material Count 1
+
+newmtl Red
+Ns 100
+Ka 0.0 0.0 1.0
+Kd 1.0 0.0 0.0
+Ks 1.0 1.0 1.0
+Ke 0.0 0.0 0.0
+
+newmtl Green
+Ns 100
+Ka 0.0 0.0 1.0
+Kd 0.0 1.0 0.0
+Ks 1.0 1.0 1.0
+Ke 0.0 0.0 0.0
+
+newmtl Blue
+Ns 100
+Ka 0.0 0.0 1.0
+Kd 0.0 0.0 1.0
+Ks 1.0 1.0 1.0
+Ke 0.0 0.0 0.0

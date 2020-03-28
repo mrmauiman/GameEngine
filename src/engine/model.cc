@@ -108,7 +108,7 @@ void Model::AddFace(std::vector<std::string> face) {
         throw "Invalid Face Definition: '" + face[i] + "' is not an int";
       }
     }
-    faces.push_back(f);
+    objects[current_material].push_back(f);
     // faces contains the face described
   } else {
     throw "Invalid Face Definition: A face has " +
@@ -132,6 +132,75 @@ void Model::AddNormal(std::vector<std::string> normal) {
   } catch (std::exception& e) {
     throw "Invalid Vertex Normal Definition: " + normal[0] + " " + normal[1] +
           " " + normal[2] + " " + normal[3];
+  }
+}
+
+// mat_file is the name of a material library
+// adds all materials described in mat_file to materials
+void Model::AddMaterials(std::string mat_file) {
+  std::string mat_name = "";
+  std::string line;
+  std::ifstream file("data/" + mat_file);
+  if (file.is_open()) {
+    try {
+      while (getline(file, line)) {
+        std::vector<std::string> tokens = Tokenize(line);
+        if (tokens.size() > 0) {
+          if (tokens[0] == "newmtl") {
+            try {
+              mat_name = tokens[1];
+              materials[mat_name] = engine::Material();
+              std::cout << materials.size() << std::endl;
+            } catch (std::exception& e) {
+              throw "new materials must have a name";
+            }
+          } else if (mat_name != "") {
+          if (tokens[0] == "Ka") {
+            try {
+              materials.at(mat_name).SetAmbient(glm::vec3(std::stof(tokens[1]),
+                             std::stof(tokens[2]), std::stof(tokens[3])));
+            } catch (std::exception& e) {
+              throw "Ka takes 3 arguements, " + std::to_string(tokens.size()-1)
+                    + " were given.";
+            }
+          } else if (tokens[0] == "Kd") {
+            try {
+              materials.at(mat_name).SetDiffuse(glm::vec3(std::stof(tokens[1]),
+                             std::stof(tokens[2]), std::stof(tokens[3])));
+            } catch (std::exception& e) {
+              throw "Kd takes 3 arguements, " + std::to_string(tokens.size()-1)
+                    + " were given.";
+            }
+          } else if (tokens[0] == "Ks") {
+            try {
+              materials.at(mat_name).SetSpecular(glm::vec3(std::stof(tokens[1]),
+                              std::stof(tokens[2]), std::stof(tokens[3])));
+            } catch (std::exception& e) {
+              throw "Ks takes 3 arguements, " + std::to_string(tokens.size()-1)
+                    + " were given.";
+            }
+          } else if (tokens[0] == "Ke") {
+            try {
+              materials.at(mat_name).SetEmission(glm::vec3(std::stof(tokens[1]),
+                              std::stof(tokens[2]), std::stof(tokens[3])));
+            } catch (std::exception& e) {
+              throw "Ke takes 3 arguements, " + std::to_string(tokens.size()-1)
+                    + " were given.";
+            }
+          } else if (tokens[0] == "Ns") {
+            try {
+              materials.at(mat_name).SetShininess(std::stof(tokens[1]));
+            } catch (std::exception& e) {
+              throw "Ns takes 1 arguement, " + std::to_string(tokens.size()-1)
+                    + " were given.";
+            }
+          }
+          }
+        }
+      }
+    } catch (const std::string msg) {
+      throw "Material Library Error: " + msg;
+    }
   }
 }
 
@@ -172,9 +241,11 @@ GLfloat * Model::GetNormalData() const {
   return rv;
 }
 
+// material name is the material the faces we want is associated with
 // returns a pointer to an array of indicies of verticies that make up faces
 // user must call delete on the value returned when they are done using it
-GLuint * Model::GetFaceData() const {
+GLuint * Model::GetFaceData(const std::string material_name) const {
+  std::vector<glm::vec3> faces = objects.at(material_name);
   GLuint * rv = new GLuint[faces.size() * FACE_SIZE];
   for (int i = 0; i < faces.size(); i++) {
     for (int j = 0; j < FACE_SIZE; j++) {
@@ -188,12 +259,19 @@ GLuint * Model::GetFaceData() const {
 
 // Default Constructor
 Model::Model() {
-  // Nothing Needs to be done
+  // Set the current material to the default material
+  current_material = "engine::default";
+  materials[current_material] = engine::Material();
+  objects[current_material] = std::vector<glm::vec3>();
 }
 
 // obj_file_name is the path to an .obj file
 // the .obj file specified is loaded into this
 Model::Model(const std::string &obj_file_name) {
+  // Set the current material to the default material
+  current_material = "engine::default";
+  materials[current_material] = engine::Material();
+  // Load obj file
   Load(obj_file_name);
 }
 
@@ -220,6 +298,17 @@ void Model::Load(const std::string &obj_file_name) {
           } else if (tokens[0] == "vn") {
             // Line is a normal
             AddNormal(tokens);
+          } else if (tokens[0] == "mtllib") {
+            AddMaterials(tokens[1]);
+          } else if (tokens[0] == "usemtl") {
+            try {
+              current_material = tokens[1];
+              if (objects.find(current_material) == objects.end()) {
+                objects[current_material] = std::vector<glm::vec3>();
+              }
+            } catch(std::exception& e) {
+              throw "Invalid Material Switch Statement";
+            }
           }
         }
       }
@@ -236,18 +325,28 @@ void Model::Load(const std::string &obj_file_name) {
 void Model::Draw() const {
   GLfloat * v_data = GetVertexData();
   GLfloat * n_data = GetNormalData();
-  GLuint * f_data = GetFaceData();
 
   glEnableClientState(GL_VERTEX_ARRAY);
   glVertexPointer(VERTEX_SIZE, GL_FLOAT, 0, v_data);
   glEnableClientState(GL_NORMAL_ARRAY);
   glNormalPointer(GL_FLOAT, 0, n_data);
 
-  glDrawElements(GL_TRIANGLES, faces.size()*FACE_SIZE, GL_UNSIGNED_INT, f_data);
+
+
+  for (auto const& mat : materials) {
+    // std::cout << mat.first << std::endl;
+    if (objects.find(mat.first) != objects.end()) {
+      GLuint * f_data = GetFaceData(mat.first);
+      mat.second.Activate();
+      glDrawElements(GL_TRIANGLES, objects.at(mat.first).size()*
+      FACE_SIZE, GL_UNSIGNED_INT, f_data);
+      delete f_data;
+    }
+  }
+
 
   delete v_data;
   delete n_data;
-  delete f_data;
 }
 
 // returns the number of veriticies

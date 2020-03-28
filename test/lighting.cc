@@ -8,6 +8,7 @@
 #include "engine/model.h"
 #include "engine/camera.h"
 #include "engine/rigid_body.h"
+#include "engine/light.h"
 
 int main(int argc, char **argv) {
   // Initialize the library
@@ -26,7 +27,7 @@ int main(int argc, char **argv) {
   glfwMakeContextCurrent(window);
 
   // Load Star Model
-  std::string obj_file_name = "data/plane.obj";
+  std::string obj_file_name = "data/cube.obj";
   if (argc > 1) {
     obj_file_name = argv[1];
   }
@@ -36,29 +37,49 @@ int main(int argc, char **argv) {
   engine::RigidBody star(&star_md);
   engine::Camera camera(90, 0.1, 100, false);
 
-  star.SetPosition(glm::vec3(0.0f, 0.0f, -10.0f));
+  star.SetPosition(glm::vec3(0.0f, 0.0f, -2.0f));
 
   // Set The Clear Color (Sky Box)
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
   // Enable Depth
   glEnable(GL_DEPTH_TEST);
+  glEnable(GL_LIGHTING);
+
+  // engine::Light light1;
+  // light1.SetPosition(glm::vec3(1.0f, 1.0f, 0.0f));
+  // light1.SetActivation(false);
+  // engine::Light light2(1.0f, 0.0f, 0.0f);
+  // light2.SetPosition(glm::vec3(-1.0f, -1.0f, -2.0f));
+  // engine::Light light3(0.0f, 1.0f, 0.0f);
+  // light3.SetPosition(glm::vec3(0.0f, 2.0f, -2.0f));
+  // engine::Light light4(0.0f, 0.0f, 1.0f);
+  // light4.SetPosition(glm::vec3(1.0f, -1.0f, -2.0f));
+  // engine::Light light5;
+  // engine::Light light6;
+  // engine::Light * light8 = new engine::Light;
+  // engine::Light light7;
+  // light5.SetActivation(false);
+  // light6.SetActivation(false);
+  // light7.SetActivation(false);
+  // light8->SetActivation(false);
+  // delete light8;
+
+  // This should work
+  engine::Light light9;
+  light9.SetPosition(glm::vec3(1.0f, 1.0f, 0.0f));
+
+
 
   // Loop until the user closes the window
   while (!glfwWindowShouldClose(window)) {
     // light
     GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1.0 };
     GLfloat mat_shininess[] = { 90.0 };
-    GLfloat light_position[] = { 1.0, 1.0, 1.0, 0.0 };
-    GLfloat light_specular[] = { 1.0, 1.0, 1.0, 1.0 };
     glShadeModel(GL_SMOOTH);
 
     glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
     glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
-    glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
 
     // Set the rendering viewport location and dimensions
     int width, height;
@@ -77,11 +98,6 @@ int main(int argc, char **argv) {
 
     GLfloat x_scaler = c_pos_x/width;
     GLfloat y_scaler = c_pos_y/height;
-    GLfloat light_ambient[] = {x_scaler, x_scaler, x_scaler, 1.0f};
-    GLfloat light_diffuse[] = {y_scaler, y_scaler, y_scaler, 1.0f};
-    glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
-    glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
 
     // Clear the color buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
