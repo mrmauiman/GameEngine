@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
   glfwMakeContextCurrent(window);
 
   // Load Star Model
-  std::string obj_file_name = "data/cube.obj";
+  std::string obj_file_name = "data/monkey.obj";
   if (argc > 1) {
     obj_file_name = argv[1];
   }
@@ -44,7 +44,6 @@ int main(int argc, char **argv) {
 
   // Enable Depth
   glEnable(GL_DEPTH_TEST);
-  glEnable(GL_LIGHTING);
 
   // engine::Light light1;
   // light1.SetPosition(glm::vec3(1.0f, 1.0f, 0.0f));
@@ -67,7 +66,10 @@ int main(int argc, char **argv) {
 
   // This should work
   engine::Light light9;
-  light9.SetPosition(glm::vec3(1.0f, 1.0f, 0.0f));
+  light9.LookAt(glm::vec3(1.0f, 1.0f, 0.0f),
+                glm::vec3(0.0f, 0.0f, -2.0f),
+                glm::vec3(0.0f, 1.0f, 0.0f));
+  light9.SetSpot(45.0, 1.0);
 
 
 

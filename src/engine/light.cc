@@ -138,6 +138,13 @@ void Light::SetOrientation(glm::quat orientation) {
   }
 }
 
+// angle and axis describe an angle axis and radians is whether angle is
+// radians, by default this is true
+// sets this.orientation to be a quaternion representing the angle axis
+void Light::SetOrientation(float angle, glm::vec3 axis, bool radians) {
+  GameObject::SetOrientation(angle, axis, radians);
+}
+
 // delta is the fraction of a second a frame takes
 void Light::Update(float delta) {
   // Nothing to do for now

@@ -1,5 +1,5 @@
-#ifndef SRC_ENGINE_GAMEOBJECT_H_
-#define SRC_ENGINE_GAMEOBJECT_H_
+#ifndef SRC_ENGINE_GAME_OBJECT_H_
+#define SRC_ENGINE_GAME_OBJECT_H_
 
 /*
  * Copyright 2020 Maui Kelley
@@ -83,4 +83,4 @@ class GameObject {
 };
 }  // namespace engine
 
-#endif  // SRC_ENGINE_GAMEOBJECT_H_
+#endif  // SRC_ENGINE_GAME_OBJECT_H_

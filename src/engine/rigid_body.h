@@ -1,5 +1,5 @@
-#ifndef SRC_ENGINE_RIGIDBODY_H_
-#define SRC_ENGINE_RIGIDBODY_H_
+#ifndef SRC_ENGINE_RIGID_BODY_H_
+#define SRC_ENGINE_RIGID_BODY_H_
 
 /*
  * Copyright 2020 Maui Kelley
@@ -46,4 +46,4 @@ class RigidBody : public GameObject {
 
 }  // namespace engine
 
-#endif  // SRC_ENGINE_RIGIDBODY_H_
+#endif  // SRC_ENGINE_RIGID_BODY_H_

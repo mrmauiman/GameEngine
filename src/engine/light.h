@@ -74,6 +74,11 @@ class Light : public GameObject {
   // Override GameObject SetOrientation
   void SetOrientation(glm::quat orientation);
 
+  // angle and axis describe an angle axis and radians is whether angle is
+  // radians, by default this is true
+  // sets this.orientation to be a quaternion representing the angle axis
+  void SetOrientation(float angle, glm::vec3 axis, bool radians = false);
+
   // delta is the fraction of a second a frame takes
   void Update(float delta);
 };
