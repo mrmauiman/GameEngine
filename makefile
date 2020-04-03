@@ -1,8 +1,8 @@
 ifeq ($(OS),Windows_NT)
-	CXXFLAGS=-lglfw3 -lopengl32 -lgdi32
+	CXXFLAGS=-lglfw3dll -lopengl32 -lgdi32 -static-libstdc++ -static-libgcc
 	CFLAGS=-std=c++11 -Isrc -Ilib
 	MKDIR=md
-	rm=rd /s /q
+	RM=rd /s /q
 else
 	UNAME=$(shell uname)
 	ifeq ($(UNAME),Darwin)
@@ -16,7 +16,7 @@ else
 	RM=rm -fr
 endif
 
-tests := $(patsubst test/%.cc,bin/%,$(wildcard test/*.cc))
+tests := $(patsubst test/%.cc,bin/%,$(wildcard test/lighting.cc))
 
 all: test
 
