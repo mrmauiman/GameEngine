@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
   glfwMakeContextCurrent(window);
 
   // Load Star Model
-  std::string obj_file_name = "data/monkey.obj";
+  std::string obj_file_name = "data/cube.obj";
   if (argc > 1) {
     obj_file_name = argv[1];
   }
