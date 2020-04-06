@@ -16,7 +16,7 @@ else
 	RM=rm -fr
 endif
 
-tests := $(patsubst test/%.cc,bin/%,$(wildcard test/test5.cc))
+tests := $(patsubst test/%.cc,bin/%,$(wildcard test/*.cc))
 
 all: test
 
