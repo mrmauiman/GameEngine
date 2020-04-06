@@ -27,7 +27,7 @@ int main(int argc, char **argv) {
   glfwMakeContextCurrent(window);
 
   // Load Star Model
-  std::string obj_file_name = "data/cube.obj";
+  std::string obj_file_name = "data/plane.obj";
   if (argc > 1) {
     obj_file_name = argv[1];
   }
@@ -38,6 +38,9 @@ int main(int argc, char **argv) {
   engine::Camera camera(90, 0.1, 100, false);
 
   star.SetPosition(0.0f, 0.0f, -2.0f);
+  camera.LookAt(glm::vec3(-1.0, 1.0, 0.0),     // EYE
+                glm::vec3(0.0f, 0.0f, -2.0f),  // CENTER
+                glm::vec3(0.0f, 1.0f, 0.0f));  // UP
 
   // Set The Clear Color (Sky Box)
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);

@@ -13,16 +13,7 @@ Material::Material() {
   SetSpecular(glm::vec3(0.0f, 0.0f, 0.0f));
   SetEmission(glm::vec3(0.0f, 0.0f, 0.0f));
   SetShininess(0.0f);
-}
-
-// Copy Constructor
-Material::Material(const Material& other) {
-  SetAmbient(glm::vec3(0.2f, 0.2f, 0.2f));
-  SetDiffuse(glm::vec3(0.8f, 0.8f, 0.8f));
-  SetSpecular(glm::vec3(0.0f, 0.0f, 0.0f));
-  SetEmission(glm::vec3(0.0f, 0.0f, 0.0f));
-  SetShininess(0.0f);
-  *this = other;
+  tex_name[0] = -1;
 }
 
 // Constructor
@@ -33,25 +24,21 @@ Material::Material(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular,
   SetSpecular(specular);
   SetEmission(glm::vec3(0.0f, 0.0f, 0.0f));
   SetShininess(shininess);
+  tex_name[0] = -1;
 }
 
 // sets this material to the current drawing material
 void Material::Activate() const {
+  // Textures
   glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient);
   glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse);
   glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular);
   glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, emission);
   glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, shininess);
-}
-
-// returns texture.image
-GLubyte *** Material::GetTexture() const {
-  return texture.GetImage();
-}
-
-// returns the width and height of texture
-glm::vec2 Material::GetTextureDimensions() const {
-  return texture.GetDimensions();
+  if (GetTexName() != -1) {
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, GetTexName());
+  }
 }
 
 // returns the tex_name[0]
@@ -100,41 +87,26 @@ void Material::SetShininess(float shininess) {
 // filename is a string
 // loads the ppm file into texture
 void Material::SetTexture(std::string filename) {
-  texture.Clear();
-  texture.Load(filename);
-  glGenTextures(1, tex_name);
+  float w, h;
+  image = LoadPPM(filename, &w, &h);
 
+  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
+  glGenTextures(1, tex_name);
   glBindTexture(GL_TEXTURE_2D, tex_name[0]);
+
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
-                 GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                 GL_NEAREST);
-  glm::vec2 dim = GetTextureDimensions();
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, dim.x,
-              dim.y, 0, GL_RGB, GL_UNSIGNED_BYTE,
-              GetTexture());
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE,
+              image.data());
 }
 
-//overload =
-Material& Material::operator=(const Material& other) {
-  for (int i = 0; i < AMBIENT_SIZE; i++) {
-    ambient[i] = other.ambient[i];
-  }
-  for (int i = 0; i < AMBIENT_SIZE; i++) {
-    diffuse[i] = other.diffuse[i];
-  }
-  for (int i = 0; i < AMBIENT_SIZE; i++) {
-    specular[i] = other.specular[i];
-  }
-  for (int i = 0; i < AMBIENT_SIZE; i++) {
-    emission[i] = other.emission[i];
-  }
-  shininess = other.shininess;
-  texture = other.texture;
-  tex_name[0] = other.tex_name[0];
-  return *this;
+// Deconstructor
+// Free texture
+Material::~Material() {
+  glDeleteTextures(1, tex_name);
 }
 
 }  // namespace engine

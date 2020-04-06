@@ -122,16 +122,17 @@ void Model::AddFace(std::vector<std::string> face) {
         int normal_index;
         int texture_index;
         if (tokens.size() == 1) {
-          normal_index = -1;
-        } else if(num_slash == 1) {
-          normal_index = -1;
+          normal_index = 0;
+          texture_index = 0;
+        } else if (num_slash == 1) {
+          normal_index = 0;
           texture_index = stoi(tokens[1]);
         } else {  // num_slash == 2
           normal_index = std::stoi((tokens.size() == 2)?tokens[1]:tokens[2]);
-          normal_index--;
-          texture_index = std::stoi((tokens.size() == 2)?"-1":tokens[1]);
-          texture_index--;
+          texture_index = std::stoi((tokens.size() == 2)?"0":tokens[1]);
         }
+        normal_index--;
+        texture_index--;
         glm::vec3 fa = {vertex_index, texture_index, normal_index};
         // fa is the face attributes this face uses
         int index = 0;
@@ -176,10 +177,9 @@ void Model::AddMaterials(std::string mat_file) {
         std::vector<std::string> tokens = Tokenize(line);
         if (tokens.size() > 0) {
           if (tokens[0] == "newmtl") {
-            std::cout << line << " : " << tokens[0] << std::endl;
             try {
               mat_name = tokens[1];
-              materials.at(mat_name) = Material();
+              materials.insert({mat_name, Material()});
             } catch (std::exception& e) {
               throw "new materials must have a name";
             }
@@ -226,7 +226,7 @@ void Model::AddMaterials(std::string mat_file) {
           } else if (tokens[0] == "map_Ka") {
             if (tokens.size() == 2) {
               materials.at(mat_name).SetTexture("data/" + tokens[1]);
-            }else {
+            } else {
               throw "map_Ka takes 1 arguement, " +
                     std::to_string(tokens.size()-1) + "were given.";
             }
@@ -316,8 +316,8 @@ GLuint * Model::GetFaceData(const std::string material_name) const {
 Model::Model() {
   // Set the current material to the default material
   current_material = "engine::default";
-  materials[current_material] = engine::Material();
-  objects[current_material] = std::vector<glm::vec3>();
+  materials.insert({current_material, Material()});
+  objects.insert({current_material, std::vector<glm::vec3>()});
 }
 
 // obj_file_name is the path to an .obj file
@@ -362,7 +362,7 @@ void Model::Load(const std::string &obj_file_name) {
             try {
               current_material = tokens[1];
               if (objects.find(current_material) == objects.end()) {
-                objects[current_material] = std::vector<glm::vec3>();
+                objects.insert({current_material, std::vector<glm::vec3>()});
               }
             } catch(std::exception& e) {
               throw "Invalid Material Switch Statement";
@@ -389,27 +389,23 @@ void Model::Draw() const {
   glVertexPointer(VERTEX_SIZE, GL_FLOAT, 0, v_data);
   glEnableClientState(GL_NORMAL_ARRAY);
   glNormalPointer(GL_FLOAT, 0, n_data);
-  glTexCoord2fv(t_data);
-
-  glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+  glTexCoordPointer(TEXTURE_VERTEX_SIZE, GL_FLOAT, 0, t_data);
 
   for (auto const& mat : materials) {
     // std::cout << mat.first << std::endl;
     if (objects.find(mat.first) != objects.end()) {
-      // Textures
-      glBindTexture(GL_TEXTURE_2D, mat.second.GetTexName());
-
       GLuint * f_data = GetFaceData(mat.first);
       mat.second.Activate();
       glDrawElements(GL_TRIANGLES, objects.at(mat.first).size()*
-      FACE_SIZE, GL_UNSIGNED_INT, f_data);
-      delete f_data;
+        FACE_SIZE, GL_UNSIGNED_INT, f_data);
+      delete[] f_data;
     }
   }
 
-
-  delete v_data;
-  delete n_data;
+  delete[] v_data;
+  delete[] n_data;
+  delete[] t_data;
 }
 
 // returns the number of veriticies

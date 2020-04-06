@@ -16,7 +16,7 @@ else
 	RM=rm -fr
 endif
 
-tests := $(patsubst test/%.cc,bin/%,$(wildcard test/lighting.cc))
+tests := $(patsubst test/%.cc,bin/%,$(wildcard test/*.cc))
 
 all: test
 
@@ -28,8 +28,8 @@ bin:
 
 test: $(tests)
 
-bin/%: build/%.o build/model.o build/game_object.o build/camera.o build/rigid_body.o build/helper.o build/light.o build/material.o build/texture.o | bin
-	g++ $< build/model.o build/game_object.o build/camera.o build/rigid_body.o build/helper.o build/light.o build/material.o build/texture.o -o $@ $(CXXFLAGS)
+bin/%: build/%.o build/model.o build/game_object.o build/camera.o build/rigid_body.o build/helper.o build/light.o build/material.o | bin
+	g++ $< build/model.o build/game_object.o build/camera.o build/rigid_body.o build/helper.o build/light.o build/material.o -o $@ $(CXXFLAGS)
 
 build/%.o: test/%.cc | build
 	g++ -c $< -o $@ $(CFLAGS)
@@ -52,11 +52,8 @@ build/helper.o: src/engine/helper.cc src/engine/helper.h | build
 build/light.o: src/engine/light.cc src/engine/light.h build/game_object.o | build
 	g++ -c src/engine/light.cc -o build/light.o $(CFLAGS)
 
-build/material.o: src/engine/material.cc src/engine/material.h build/texture.o | build
+build/material.o: src/engine/material.cc src/engine/material.h build/helper.o | build
 	g++ -c src/engine/material.cc -o build/material.o $(CFLAGS)
-
-build/texture.o: src/engine/texture.cc src/engine/texture.h | build
-	g++ -c src/engine/texture.cc -o build/texture.o $(CFLAGS)
 
 clean:
 	$(RM) build bin
