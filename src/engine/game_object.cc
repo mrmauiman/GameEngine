@@ -27,6 +27,7 @@ namespace engine {
     scale = {1.0f, 1.0f, 1.0f};
     glm::vec3 axis = {0.0f, 0.0f, -1.0f};
     orientation = glm::angleAxis(0.0f, axis);
+    SetBoundingBox(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0));
   }
 
   // position is the new position
@@ -58,6 +59,13 @@ namespace engine {
   // sets this.scale to scale
   void GameObject::SetScale(glm::vec3 scale) {
     this->scale = scale;
+  }
+
+  // minimum and maximum define a bounding box
+  // sets the bounding box memeber data
+  void GameObject::SetBoundingBox(glm::vec3 minimum, glm::vec3 maximum) {
+    bounding_box_min = minimum;
+    bounding_box_max = maximum;
   }
 
   // returns the position
@@ -97,6 +105,16 @@ namespace engine {
     SetPosition(eye);
     glm::mat4 rot_mat = glm::inverse(glm::lookAt(eye, center, up));
     SetOrientation(glm::quat_cast(rot_mat));
+  }
+
+  // point is a global position
+  // returns true if point is in or touching the bounding box of this and
+  // false otherwise
+  bool GameObject::Intersects(glm::vec3 point) const {
+    point -= position;
+    point = glm::rotate(glm::inverse(orientation), point);
+    return (point.x >= bounding_box_min.x && point.x <= bounding_box_max.x &&
+            point.y >= bounding_box_min.y && point.y <= bounding_box_max.y);
   }
 
 }  // namespace engine
