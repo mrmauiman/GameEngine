@@ -7,9 +7,12 @@
 
 // C/C++ lib
 #include <GLFW/glfw3.h>
+#include <string>
+#include <vector>
 
 // src
 #include "engine/constants.h"
+#include "engine/helper.h"
 
 // lib
 #include "glm/vec3.hpp"
@@ -24,6 +27,9 @@ class Material {
   float emission[EMISSION_SIZE];
   float shininess;
 
+  GLuint tex_name[1];
+  std::vector<GLubyte> image;
+
  public:
   // Default Constructor
   Material();
@@ -34,6 +40,10 @@ class Material {
 
   // sets this material to the current drawing material
   void Activate() const;
+
+  // Getters
+  // returns the tex_name[0]
+  GLuint GetTexName() const;
 
   // Setters
   // ambient is an rgba color
@@ -50,6 +60,14 @@ class Material {
 
   // shininess is the specular exponent of range 0-128
   void SetShininess(float shininess);
+
+  // filename is a string
+  // loads the ppm file into texture
+  void SetTexture(std::string filename);
+
+  // Deconstructor
+  // Free texture
+  ~Material();
 };
 
 }  // namespace engine

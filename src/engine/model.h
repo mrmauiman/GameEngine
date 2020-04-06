@@ -13,6 +13,7 @@
 #include <vector>
 #include <map>
 #include <exception>
+#include <algorithm>
 
 #include "glm/glm.hpp"
 #include "glm/vec2.hpp"
@@ -30,11 +31,15 @@ class Model {
   // Verticies is a c++ vector of vectors
   std::vector<glm::vec4> verticies;
 
+  // texture_vertices is a c++ vector of vectors
+  std::vector<glm::vec2> texture_vertices;
+
   // Normals is a c++ vector of vectors
   std::vector<glm::vec3> normals;
 
-  // vertex_normal_pairs is a c++ vector of vectors
-  std::vector<glm::vec2> vertex_normal_pairs;
+  // face attributes stores the connections between vertices, texture vertices,
+  // and normals
+  std::vector<glm::vec3> face_attributes;
 
   // Faces is a c++ vector of vectors
   std::vector<glm::vec3> faces;
@@ -66,6 +71,11 @@ class Model {
   // formatted correctly and returns false otherwise
   void AddFace(std::vector<std::string> face);
 
+  // texture vertex starts with vt and is the definition of a texture vertex
+  // adds the specified texture vertex to the texture_vertices and throw a
+  // string exception if the line is defined incorrectly
+  void AddTextureVertex(std::vector<std::string> texture_vertex);
+
   // normal is a line that starts with vn and contains normal data
   // adds the normal descibed to normal_vector and returns true iff the data is
   // formatted correctly and returns false otherwise
@@ -81,6 +91,10 @@ class Model {
   // returns a pointer to an array containing all verticies
   // user must call delete on the value returned when they are done using it
   GLfloat * GetVertexData() const;
+
+  // returns a pointer to an array containing all texture vertices
+  // user must call delete on the value returned when they are done using it
+  GLfloat * GetTextureVertexData() const;
 
   // returns a pointer to an array containing all normals ordered to their
   // verticies
