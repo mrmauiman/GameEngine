@@ -114,7 +114,8 @@ namespace engine {
     point -= position;
     point = glm::rotate(glm::inverse(orientation), point);
     return (point.x >= bounding_box_min.x && point.x <= bounding_box_max.x &&
-            point.y >= bounding_box_min.y && point.y <= bounding_box_max.y);
+            point.y >= bounding_box_min.y && point.y <= bounding_box_max.y &&
+            point.z >= bounding_box_min.z && point.z <= bounding_box_max.z);
   }
 
 }  // namespace engine
