@@ -24,6 +24,9 @@ class GameObject {
   glm::vec3 scale;
   glm::quat orientation;
 
+  // Bounding Box
+  glm::vec3 bounding_box_min, bounding_box_max;
+
   // angle and axis describe an angle axis and radians is whether angle is
   // radians, by default this is true
   // returns a quaternion that represents the axis angle
@@ -54,6 +57,10 @@ class GameObject {
   // sets this.scale to scale
   void SetScale(glm::vec3 scale);
 
+  // minimum and maximum define a bounding box
+  // sets the bounding box memeber data
+  void SetBoundingBox(glm::vec3 minimum, glm::vec3 maximum);
+
   // returns the position
   glm::vec3 GetPosition();
 
@@ -77,6 +84,11 @@ class GameObject {
   // vector. A game object “looks at” a point by orienting so that the negative
   // z-axis points from the eye position to the center position.
   void LookAt(glm::vec3 eye, glm::vec3 center, glm::vec3 up);
+
+  // point is a global position
+  // returns true if point is in or touching the bounding box of this and
+  // false otherwise
+  bool Intersects(glm::vec3 point) const;
 
   // Virtual Function Update
   virtual void Update(float delta) = 0;

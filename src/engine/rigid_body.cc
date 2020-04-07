@@ -9,6 +9,7 @@ namespace engine {
 // model is a pointer to a model
 RigidBody::RigidBody(const Model *model) {
   this->model = model;
+  SetBoundingBox(model->GetBoundMin(), model->GetBoundMax());
 }
 
 // draws the rigid body’s model with it’s current position and orientation.

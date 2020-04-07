@@ -53,7 +53,9 @@ class Model {
   // current_material is the material to assign to any face read in
   std::string current_material;
 
-
+  // wrapping bounding box
+  glm::vec3 bound_min;
+  glm::vec3 bound_max;
 
   // private functions
 
@@ -124,6 +126,12 @@ class Model {
 
   // returns the number of veriticies
   int GetNumVerticies() const;
+
+  // Returns bound_min
+  glm::vec3 GetBoundMin() const;
+
+  // Returns bound_min
+  glm::vec3 GetBoundMax() const;
 
   // delete the copy constructor
   Model(const Model& model);

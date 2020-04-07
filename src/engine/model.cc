@@ -56,6 +56,12 @@ void Model::AddVertex(std::vector<std::string> vertex) {
     if (vertex.size() == NUM_VERTEX_TOKENS-1) {
       v[VERTEX_SIZE-1] = W_DEFAULT;
     }
+    bound_min.x = (v.x < bound_min.x)?v.x:bound_min.x;
+    bound_min.y = (v.y < bound_min.y)?v.y:bound_min.y;
+    bound_min.z = (v.z < bound_min.z)?v.z:bound_min.z;
+    bound_max.x = (v.x > bound_max.x)?v.x:bound_max.x;
+    bound_max.y = (v.y > bound_max.y)?v.y:bound_max.y;
+    bound_max.z = (v.z > bound_max.z)?v.z:bound_max.z;
     verticies.push_back(v);
     // verticies contains the vertex described
   } else {
@@ -318,6 +324,8 @@ Model::Model() {
   current_material = "engine::default";
   materials.insert({current_material, Material()});
   objects.insert({current_material, std::vector<glm::vec3>()});
+  bound_min = glm::vec3(0, 0, 0);
+  bound_max = glm::vec3(0, 0, 0);
 }
 
 // obj_file_name is the path to an .obj file
@@ -326,6 +334,8 @@ Model::Model(const std::string &obj_file_name) {
   // Set the current material to the default material
   current_material = "engine::default";
   materials[current_material] = engine::Material();
+  bound_min = glm::vec3(0, 0, 0);
+  bound_max = glm::vec3(0, 0, 0);
   // Load obj file
   Load(obj_file_name);
 }
@@ -411,6 +421,16 @@ void Model::Draw() const {
 // returns the number of veriticies
 int Model::GetNumVerticies() const {
   return face_attributes.size()*VERTEX_SIZE;
+}
+
+// Returns bound_min
+glm::vec3 Model::GetBoundMin() const {
+  return bound_min;
+}
+
+// Returns bound_min
+glm::vec3 Model::GetBoundMax() const {
+  return bound_max;
 }
 
 }  // namespace engine
