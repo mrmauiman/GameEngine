@@ -100,6 +100,11 @@ class GameObject {
   // returns an array of size 8 that represents all vertices in our bounding box
   glm::vec3 * GetBoundingBoxPoints() const;
 
+  // point is a global position
+  // returns true if point is in or touching the bounding box of this and
+  // false otherwise
+  bool Intersects(glm::vec3 point) const;
+
   // other is another gameobject
   // returns true if the other gameobject is colliding with this and false
   // otherwise

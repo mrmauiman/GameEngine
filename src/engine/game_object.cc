@@ -157,6 +157,17 @@ namespace engine {
     return rv;
   }
 
+  // point is a global position
+  // returns true if point is in or touching the bounding box of this and
+  // false otherwise
+  bool GameObject::Intersects(glm::vec3 point) const {
+    point -= position;
+    point = glm::rotate(glm::inverse(orientation), point);
+    return (point.x >= bounding_box_min.x && point.x <= bounding_box_max.x &&
+            point.y >= bounding_box_min.y && point.y <= bounding_box_max.y &&
+            point.z >= bounding_box_min.z && point.z <= bounding_box_max.z);
+  }
+
   // other is another gameobject
   // returns true if the other gameobject is colliding with this and false
   // otherwise

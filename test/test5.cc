@@ -10,10 +10,11 @@
 
 int main() {
   engine::Model model("data/cube.obj");
-  engine::RigidBody rigidBody1(&model);
-  engine::RigidBody rigidBody2(&model);
+  engine::RigidBody rigidBody(&model);
   glm::vec3 point_in_model(0.0f, 0.0f, 0.0f);
   glm::vec3 point_not_in_model(0.0f, 0.0f, 100.0f);
-  rigidBody1.Intersects(rigidBody2);
+  assert(rigidBody.Intersects(point_in_model));
+  assert(!rigidBody.Intersects(point_not_in_model));
+  std::cout << "All assertions passed!" << std::endl;
   exit(EXIT_SUCCESS);
 }
