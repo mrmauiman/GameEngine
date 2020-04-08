@@ -82,12 +82,9 @@ int main(int argc, char **argv) {
 
   // This should work
   engine::Light light9;
-  light9.LookAt(glm::vec3(1.0f, 1.0f, 0.0f),
+  light9.LookAt(glm::vec3(0.0f, 1.0f, 2.0f),
                 glm::vec3(0.0f, 0.0f, 0.0f),
                 glm::vec3(0.0f, 1.0f, 0.0f));
-  light9.SetSpot(45.0, 1.0);
-
-
 
   // Loop until the user closes the window
   while (!glfwWindowShouldClose(window)) {

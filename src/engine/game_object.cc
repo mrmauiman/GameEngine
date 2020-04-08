@@ -25,7 +25,7 @@ namespace engine {
   float GameObject::ValueOnAxis(glm::vec3 axis, glm::vec3 point) const {
     axis = glm::normalize(axis);
     glm::vec3 x_axis(1, 0, 0);
-    glm::vec3 r_axis = glm::cross(axis, x_axis);
+    glm::vec3 r_axis = glm::normalize(glm::cross(axis, x_axis));
     float angle = glm::angle(axis, x_axis);
     point = glm::rotate(AxisToQuat(angle, r_axis, true), point);
     return point.x;
