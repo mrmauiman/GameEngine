@@ -14,6 +14,8 @@
 
 #include "engine/constants.h"
 
+#include "glm/vec3.hpp"
+
 namespace engine {
 
 // returns returns value clamped to min and max
@@ -43,6 +45,9 @@ void get_dimensions(std::ifstream * image_file, unsigned char * c, int * dim);
 // returns a GLubyte 3D array of sizes width, height, and 3
 // user must delete all levels of array
 std::vector<GLubyte> LoadPPM(std::string file_name, float* w, float* h);
+
+// prints vec3
+void PrintVec3(glm::vec3 v);
 
 }  // namespace engine
 

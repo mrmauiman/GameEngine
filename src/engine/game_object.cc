@@ -11,12 +11,39 @@ namespace engine {
   // angle and axis describe an angle axis and radians is whether angle is
   // radians, by default this is true
   // returns a quaternion that represents the axis angle
-  glm::quat GameObject::AxisToQuat(float angle, glm::vec3 axis, bool radians) {
+  glm::quat GameObject::AxisToQuat(float angle, glm::vec3 axis, bool radians)
+    const {
     if (!radians) {
       angle = deg2rad(angle);
     }
 
     return glm::angleAxis(angle, axis);
+  }
+
+  // axis is an axis in 3d space and point is a point in 3d space
+  // returns the value of how far along the axis point is
+  float GameObject::ValueOnAxis(glm::vec3 axis, glm::vec3 point) const {
+    axis = glm::normalize(axis);
+    glm::vec3 x_axis(1, 0, 0);
+    glm::vec3 r_axis = glm::cross(axis, x_axis);
+    float angle = glm::angle(axis, x_axis);
+    point = glm::rotate(AxisToQuat(angle, r_axis, true), point);
+    return point.x;
+  }
+
+  // min_max is a array of size 2, axis is an axis in 3D space, points is an
+  // array of 8 points
+  // sets min_max[0] to the smallest value on axis in points and min_max[1] to
+  // the largest
+  void GameObject::GetMinMaxOnAxis(float * min_max, glm::vec3 axis,
+                                   glm::vec3 * points) const {
+    min_max[0] = ValueOnAxis(axis, points[0]);
+    min_max[1] = ValueOnAxis(axis, points[0]);
+    for (int i = 1; i < NUM_BOX_POINTS; i++) {
+      float val = ValueOnAxis(axis, points[i]);
+      min_max[0] = (min_max[0] > val)?val:min_max[0];
+      min_max[1] = (min_max[1] < val)?val:min_max[1];
+    }
   }
 
   // PUBLIC
@@ -107,15 +134,62 @@ namespace engine {
     SetOrientation(glm::quat_cast(rot_mat));
   }
 
-  // point is a global position
-  // returns true if point is in or touching the bounding box of this and
-  // false otherwise
-  bool GameObject::Intersects(glm::vec3 point) const {
-    point -= position;
-    point = glm::rotate(glm::inverse(orientation), point);
-    return (point.x >= bounding_box_min.x && point.x <= bounding_box_max.x &&
-            point.y >= bounding_box_min.y && point.y <= bounding_box_max.y &&
-            point.z >= bounding_box_min.z && point.z <= bounding_box_max.z);
+  // returns an array of size 8 that represents all vertices in our bounding box
+  glm::vec3 * GameObject::GetBoundingBoxPoints() const {
+    glm::vec3 * rv = new glm::vec3[NUM_BOX_POINTS];
+    glm::vec3 points[NUM_BOX_POINTS] = {
+      bounding_box_min,
+      glm::vec3(bounding_box_max.x, bounding_box_min.y, bounding_box_min.z),
+      glm::vec3(bounding_box_min.x, bounding_box_min.y, bounding_box_max.z),
+      glm::vec3(bounding_box_min.x, bounding_box_max.y, bounding_box_min.z),
+      bounding_box_max,
+      glm::vec3(bounding_box_min.x, bounding_box_max.y, bounding_box_max.z),
+      glm::vec3(bounding_box_max.x, bounding_box_max.y, bounding_box_min.z),
+      glm::vec3(bounding_box_max.x, bounding_box_min.y, bounding_box_max.z)
+    };
+
+    for (int i = 0; i < NUM_BOX_POINTS; i++) {
+      glm::vec3 temp = glm::rotate(orientation, points[i]);
+      temp += position;
+      rv[i] = temp;
+    }
+
+    return rv;
+  }
+
+  // other is another gameobject
+  // returns true if the other gameobject is colliding with this and false
+  // otherwise
+  bool GameObject::Intersects(const GameObject & other) const {
+    bool rv = true;
+    glm::vec3 * my_points = GetBoundingBoxPoints();
+    glm::vec3 * other_points = other.GetBoundingBoxPoints();
+    glm::vec3 axises[NUM_BOX_AXIS] = {
+      my_points[0] - my_points[1],
+      my_points[0] - my_points[2],
+      my_points[0] - my_points[3],
+      other_points[0] - other_points[1],
+      other_points[0] - other_points[2],
+      other_points[0] - other_points[3],
+    };
+
+    for (int i = 0; i < NUM_BOX_AXIS && rv; i++) {
+      float my_min_max[2] = {0, 0};
+      float other_min_max[2] = {0, 0};
+
+      GetMinMaxOnAxis(my_min_max, axises[i], my_points);
+      GetMinMaxOnAxis(other_min_max, axises[i], other_points);
+
+      if ((my_min_max[0] > other_min_max[1] && my_min_max[0] > other_min_max[0])
+      || (my_min_max[1] < other_min_max[1] && my_min_max[1] < other_min_max[0])
+      ) {
+        rv = false;
+      }
+    }
+
+    delete[] my_points;
+    delete[] other_points;
+    return rv;
   }
 
 }  // namespace engine

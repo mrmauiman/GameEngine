@@ -30,5 +30,7 @@
 #define COLOR_MAX 255
 #define RGB_SIZE 3
 #define NUM_PPM_ATTRIBUTES 3
+#define NUM_BOX_POINTS 8
+#define NUM_BOX_AXIS 6
 
 #endif  // SRC_ENGINE_CONSTANTS_H_

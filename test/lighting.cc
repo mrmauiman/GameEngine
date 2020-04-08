@@ -9,6 +9,7 @@
 #include "engine/camera.h"
 #include "engine/rigid_body.h"
 #include "engine/light.h"
+#include "engine/helper.h"
 
 int main(int argc, char **argv) {
   // Initialize the library
@@ -35,16 +36,24 @@ int main(int argc, char **argv) {
 
   // Initialize necessary variables
   engine::RigidBody star(&star_md);
+  engine::RigidBody cube(&star_md);
   engine::Camera camera(90, 0.1, 100, false);
 
-  star.SetPosition(0.0f, 0.0f, -2.0f);
-  camera.LookAt(glm::vec3(-1.0, 1.0, 0.0),     // EYE
-                glm::vec3(0.0f, 0.0f, -2.0f),  // CENTER
+  camera.LookAt(glm::vec3(0.0, 0.0, 2.0),     // EYE
+                glm::vec3(0.0f, 0.0f, 0.0f),  // CENTER
                 glm::vec3(0.0f, 1.0f, 0.0f));  // UP
-  star.Turn(45, glm::vec3(0, 0, -1));
-  // star.Turn(45, glm::vec3(0, 1, 0));
-  std::cout << (star.Intersects(glm::vec3(0, 0, -2))?"True":"False");
-  std::cout << std::endl;
+  star.LookAt(glm::vec3(-2.0f, -2.0f, 0.0f),
+              glm::vec3(2.0f, 2.0f, 0.0f),
+              glm::vec3(0.0f, 1.0f, 0.0f));
+  cube.LookAt(glm::vec3(2.0f, 2.0f, 0.0f),
+              glm::vec3(-2.0f, -2.0f, 0.0f),
+              glm::vec3(0.0f, 1.0f, 0.0f));
+
+  if (star.Intersects(cube)) {
+    std::cout << "True" << std::endl;
+  } else {
+    std::cout << "False" << std::endl;
+  }
 
   // Set The Clear Color (Sky Box)
   glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -74,7 +83,7 @@ int main(int argc, char **argv) {
   // This should work
   engine::Light light9;
   light9.LookAt(glm::vec3(1.0f, 1.0f, 0.0f),
-                glm::vec3(0.0f, 0.0f, -2.0f),
+                glm::vec3(0.0f, 0.0f, 0.0f),
                 glm::vec3(0.0f, 1.0f, 0.0f));
   light9.SetSpot(45.0, 1.0);
 
@@ -118,8 +127,13 @@ int main(int argc, char **argv) {
       camera.MultViewMatrix();
       // Draw The Stars
       glPushMatrix();
-        star.Turn(-1, glm::vec3(0.0, 1.0, 0.0), false);
+        // star.Turn(-1, glm::vec3(0.0, 1.0, 0.0), false);
+        if (!star.Intersects(cube)) {
+          star.Move(glm::vec3(0.0f, 0.0f, -0.01f));
+          cube.Move(glm::vec3(0.0f, 0.0f, -0.01f));
+        }
         star.Draw();
+        cube.Draw();
       glPopMatrix();
     glPopMatrix();
 

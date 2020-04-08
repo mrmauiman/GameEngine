@@ -117,4 +117,9 @@ std::vector<GLubyte> LoadPPM(std::string file_name, float* w, float* h) {
   return image;
 }
 
+// prints vec3
+void PrintVec3(glm::vec3 v) {
+  std::cout << v.x << " " << v.y << " " << v.z << std::endl;
+}
+
 }  // namespace engine
