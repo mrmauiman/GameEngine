@@ -27,29 +27,30 @@ int main(int argc, char **argv) {
   // Make the window's context current
   glfwMakeContextCurrent(window);
 
-  // Load Star Model
+  // Load box1 Model
   std::string obj_file_name = "data/cube.obj";
   if (argc > 1) {
     obj_file_name = argv[1];
   }
-  engine::Model star_md(obj_file_name);
+  engine::Model md(obj_file_name);
 
   // Initialize necessary variables
-  engine::RigidBody star(&star_md);
-  engine::RigidBody cube(&star_md);
-  engine::Camera camera(90, 0.1, 100, false);
+  engine::RigidBody box1(&md);
+  engine::RigidBody box2(&md);
+  engine::Camera camera(45, 0.1, 100, false);
 
-  camera.LookAt(glm::vec3(0.0, 0.0, 2.0),     // EYE
+  camera.LookAt(glm::vec3(0.0, 0.0, 25.0),     // EYE
                 glm::vec3(0.0f, 0.0f, 0.0f),  // CENTER
                 glm::vec3(0.0f, 1.0f, 0.0f));  // UP
-  star.LookAt(glm::vec3(-2.0f, -2.0f, 0.0f),
+  box1.LookAt(glm::vec3(-2.0f, -2.0f, 0.0f),
               glm::vec3(2.0f, 2.0f, 0.0f),
               glm::vec3(0.0f, 1.0f, 0.0f));
-  cube.LookAt(glm::vec3(2.0f, 2.0f, 0.0f),
+  box2.LookAt(glm::vec3(2.0f, 2.0f, 0.0f),
               glm::vec3(-2.0f, -2.0f, 0.0f),
               glm::vec3(0.0f, 1.0f, 0.0f));
+  engine::PrintVec3(box2.GetPosition());
 
-  if (star.Intersects(cube)) {
+  if (box1.Intersects(box2)) {
     std::cout << "True" << std::endl;
   } else {
     std::cout << "False" << std::endl;
@@ -61,30 +62,12 @@ int main(int argc, char **argv) {
   // Enable Depth
   glEnable(GL_DEPTH_TEST);
 
-  // engine::Light light1;
-  // light1.SetPosition(glm::vec3(1.0f, 1.0f, 0.0f));
-  // light1.SetActivation(false);
-  // engine::Light light2(1.0f, 0.0f, 0.0f);
-  // light2.SetPosition(glm::vec3(-1.0f, -1.0f, -2.0f));
-  // engine::Light light3(0.0f, 1.0f, 0.0f);
-  // light3.SetPosition(glm::vec3(0.0f, 2.0f, -2.0f));
-  // engine::Light light4(0.0f, 0.0f, 1.0f);
-  // light4.SetPosition(glm::vec3(1.0f, -1.0f, -2.0f));
-  // engine::Light light5;
-  // engine::Light light6;
-  // engine::Light * light8 = new engine::Light;
-  // engine::Light light7;
-  // light5.SetActivation(false);
-  // light6.SetActivation(false);
-  // light7.SetActivation(false);
-  // light8->SetActivation(false);
-  // delete light8;
-
   // This should work
   engine::Light light9;
   light9.LookAt(glm::vec3(0.0f, 1.0f, 2.0f),
                 glm::vec3(0.0f, 0.0f, 0.0f),
                 glm::vec3(0.0f, 1.0f, 0.0f));
+  float speed = -0.01f;
 
   // Loop until the user closes the window
   while (!glfwWindowShouldClose(window)) {
@@ -106,31 +89,27 @@ int main(int argc, char **argv) {
     glLoadIdentity();
     camera.MultProjectionMatrix(width, height);
 
-    // Get the mouse position
-    double c_pos_x = 0.0;
-    double c_pos_y = 0.0;
-    glfwGetCursorPos(window, &c_pos_x, &c_pos_y);
-
-    GLfloat x_scaler = c_pos_x/width;
-    GLfloat y_scaler = c_pos_y/height;
-
     // Clear the color buffer
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Draw the rigid bodies
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
+      // Draw UI
+      // --here--
       // Transform The Camera
       camera.MultViewMatrix();
-      // Draw The Stars
+      // Draw The box1s
       glPushMatrix();
-        // star.Turn(-1, glm::vec3(0.0, 1.0, 0.0), false);
-        if (!star.Intersects(cube)) {
-          star.Move(glm::vec3(0.0f, 0.0f, -0.01f));
-          cube.Move(glm::vec3(0.0f, 0.0f, -0.01f));
+        if (box1.Intersects(box2)) {
+          speed = 0.01f;
         }
-        star.Draw();
-        cube.Draw();
+        box1.Move(glm::vec3(0.0f, 0.0f, speed));
+        box2.Move(glm::vec3(0.0f, 0.0f, speed));
+        box1.Turn(-1.0, glm::vec3(0.0, 0.0, 1.0), false);
+        box2.Turn(-1.0, glm::vec3(0.0, 0.0, 1.0), false);
+        box1.Draw();
+        box2.Draw();
       glPopMatrix();
     glPopMatrix();
 

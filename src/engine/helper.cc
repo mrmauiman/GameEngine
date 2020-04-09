@@ -6,6 +6,36 @@
 
 namespace engine {
 
+// str is a string
+// returns a vector of all items in str seperated by whitespace
+std::vector<std::string> Tokenize(std::string str, std::string sep) {
+  std::vector<std::string> tokens;
+  std::string current = "";
+  int c = 0;
+  bool found = false;
+  for (int c = 0; c < str.length(); c++) {
+    found = (sep == "ws") ? (isspace(str[c])) : (str[c] == sep[0]);
+    if (found) {
+      if (current != "") {
+        // a token was found
+        tokens.push_back(current);
+        current = "";
+      }
+    } else {
+      current += str[c];
+    }
+    if (str[c] == '#') {
+      break;
+    }
+  }
+  if (current != "") {
+    // final token
+    tokens.push_back(current);
+  }
+  // str has been tokenized into tokens
+  return tokens;
+}
+
 // returns returns value clamped to min and max
 float clamp(float value, float min, float max) {
   if (min > value) {
@@ -56,7 +86,7 @@ int get_type(std::ifstream * image_file, unsigned char * c) {
 }
 
 // reads width, height, and max from ppm and stores them in dim
-void get_dimensions(std::ifstream * image_file, unsigned char * c, int * dim) {
+void get_ppm_dimensions(std::ifstream* image_file, unsigned char* c, int* dim) {
   *c = image_file->get();
   if (*c == '#') {
     skip_comment(image_file, c);
@@ -81,8 +111,7 @@ void get_dimensions(std::ifstream * image_file, unsigned char * c, int * dim) {
 }
 
 // file name is the path to the ppm file from the project folder
-// returns a GLubyte 3D array of sizes width, height, and 3
-// user must delete all levels of array
+// returns a GLubyte vector of size width * height * 3
 std::vector<GLubyte> LoadPPM(std::string file_name, float* w, float* h) {
   int type;  // always 6
   int dim[NUM_PPM_ATTRIBUTES];  // 0 is width, 1 is height, and 2 is max
@@ -96,7 +125,7 @@ std::vector<GLubyte> LoadPPM(std::string file_name, float* w, float* h) {
   type = get_type(&image_file, &c);
 
   // Get the dimensions
-  get_dimensions(&image_file, &c, dim);
+  get_ppm_dimensions(&image_file, &c, dim);
 
   // Find start of data block is always a single whitespace char from max
   c = image_file.get();
@@ -105,15 +134,58 @@ std::vector<GLubyte> LoadPPM(std::string file_name, float* w, float* h) {
   for (int x = 0; x < dim[0]; x++) {
     for (int y = 0; y < dim[1]; y++) {
       for (int z = 0; z < RGB_SIZE; z++) {
-        image.push_back((GLubyte)(static_cast<float>(c)/dim[2]*COLOR_MAX));
+        image.push_back((GLubyte)(static_cast<float>(c)/dim[2]*RGB_MAX));
         c = image_file.get();
       }
+      image.push_back((GLubyte)RGB_MAX);
     }
   }
   image_file.close();
 
   *w = dim[0];
   *h = dim[1];
+  return image;
+}
+
+// file name is the path to the pam file from the project folder
+// returns a GLubyte vector of size width * height * depth specified in file
+std::vector<GLubyte> LoadPAM(std::string fname, float* w, float* h, float* d) {
+  int type;  // always 7
+  std::map<std::string, int> dim;
+  std::vector<GLubyte> image;  // How the image will be stored
+  // open file for reading binary
+  std::ifstream image_file(fname, std::ios::in | std::ios::binary);
+
+  // Read Header
+  std::string buf = "";
+  std::string lbl = "";
+  std::vector<std::string> tokens;
+  while (lbl != "ENDHDR") {
+    if (tokens.size() > 1 && tokens[0][0] != '#' && tokens[0] != "TUPLTYPE") {
+      dim.insert({tokens[0], std::stoi(tokens[1])});
+    }
+    std::getline(image_file, buf);
+    tokens = Tokenize(buf);
+    if (tokens.size() > 0) {
+      lbl = tokens[0];
+    }
+  }
+
+  unsigned char c;  // character buffer for reading file
+  // Load the image on the stack
+  for (int x = 0; x < dim["WIDTH"]; x++) {
+    for (int y = 0; y < dim["HEIGHT"]; y++) {
+      for (int z = 0; z < dim["DEPTH"]; z++) {
+        c = image_file.get();
+        image.push_back((GLubyte)(static_cast<float>(c)/dim["MAXVAL"]*RGB_MAX));
+      }
+    }
+  }
+  image_file.close();
+
+  *w = dim["WIDTH"];
+  *h = dim["HEIGHT"];
+  *d = dim["DEPTH"];
   return image;
 }
 

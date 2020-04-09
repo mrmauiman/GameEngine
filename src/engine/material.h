@@ -16,6 +16,7 @@
 
 // lib
 #include "glm/vec3.hpp"
+#include "glm/vec4.hpp"
 
 namespace engine {
 
@@ -57,6 +58,18 @@ class Material {
 
   // emission is an rgba color
   void SetEmission(glm::vec3 emission);
+
+  // ambient is an rgba color
+  void SetAmbient(glm::vec4 ambient);
+
+  // diffuse is an rgba color
+  void SetDiffuse(glm::vec4 diffuse);
+
+  // specular is an rgba color
+  void SetSpecular(glm::vec4 specular);
+
+  // emission is an rgba color
+  void SetEmission(glm::vec4 emission);
 
   // shininess is the specular exponent of range 0-128
   void SetShininess(float shininess);

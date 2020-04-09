@@ -59,10 +59,6 @@ class Model {
 
   // private functions
 
-  // str is a string, sep is a character to tokenize str by, "ws" is whitespace
-  // returns a vector of all items in str seperated by whitespace
-  std::vector<std::string> Tokenize(std::string str, std::string sep = "ws");
-
   // vertex is a line that starts with v and contains vertex data
   // Adds the vertex described in vertex and returns true if the data is
   // formatted correctly and returns false otherwise

@@ -8,36 +8,6 @@ namespace engine {
 
 // PRIVATE
 
-// str is a string
-// returns a vector of all items in str seperated by whitespace
-std::vector<std::string> Model::Tokenize(std::string str, std::string sep) {
-  std::vector<std::string> tokens;
-  std::string current = "";
-  int c = 0;
-  bool found = false;
-  for (int c = 0; c < str.length(); c++) {
-    found = (sep == "ws") ? (isspace(str[c])) : (str[c] == sep[0]);
-    if (found) {
-      if (current != "") {
-        // a token was found
-        tokens.push_back(current);
-        current = "";
-      }
-    } else {
-      current += str[c];
-    }
-    if (str[c] == '#') {
-      break;
-    }
-  }
-  if (current != "") {
-    // final token
-    tokens.push_back(current);
-  }
-  // str has been tokenized into tokens
-  return tokens;
-}
-
 // vertex is a line that starts with v and contains vertex data
 // Adds the vertex described in vertex
 void Model::AddVertex(std::vector<std::string> vertex) {

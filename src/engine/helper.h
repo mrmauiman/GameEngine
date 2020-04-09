@@ -11,12 +11,17 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <map>
 
 #include "engine/constants.h"
 
 #include "glm/vec3.hpp"
 
 namespace engine {
+
+// str is a string, sep is a character to tokenize str by, "ws" is whitespace
+// returns a vector of all items in str seperated by whitespace
+std::vector<std::string> Tokenize(std::string str, std::string sep = "ws");
 
 // returns returns value clamped to min and max
 float clamp(float value, float min, float max);
@@ -42,9 +47,12 @@ int get_type(std::ifstream * image_file, unsigned char * c);
 void get_dimensions(std::ifstream * image_file, unsigned char * c, int * dim);
 
 // file name is the path to the ppm file from the project folder
-// returns a GLubyte 3D array of sizes width, height, and 3
-// user must delete all levels of array
+// returns a GLubyte vector of size width * height * 3
 std::vector<GLubyte> LoadPPM(std::string file_name, float* w, float* h);
+
+// file name is the path to the pam file from the project folder
+// returns a GLubyte vector of size width * height * depth specified in file
+std::vector<GLubyte> LoadPAM(std::string fname, float* w, float* h, float* d);
 
 // prints vec3
 void PrintVec3(glm::vec3 v);
