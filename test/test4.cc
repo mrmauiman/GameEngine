@@ -32,7 +32,7 @@ int main() {
   glEnable(GL_DEPTH_TEST);
 
   // create rigid body and camera
-  engine::Model model("data/cube.obj");
+  engine::Model model("data/energy_ball.obj");
   engine::RigidBody rigidBody(&model);
   engine::Camera camera(35.0f, 0.1f, 10.0f);
   camera.LookAt(glm::vec3(0.0f, 0.0f, 5.0f),   // eye

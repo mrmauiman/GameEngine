@@ -14,6 +14,7 @@ Material::Material() {
   SetEmission(glm::vec4(0.0f, 0.0f, 0.0f, 0.0f));
   SetShininess(0.0f);
   tex_name[0] = -1;
+  image_width = image_height = 0;
 }
 
 // Constructor
@@ -25,6 +26,7 @@ Material::Material(glm::vec3 ambient, glm::vec3 diffuse, glm::vec3 specular,
   SetEmission(glm::vec3(0.0f, 0.0f, 0.0f));
   SetShininess(shininess);
   tex_name[0] = -1;
+  image_width = image_height = 0;
 }
 
 // sets this material to the current drawing material
@@ -46,6 +48,11 @@ void Material::Activate() const {
 // returns the tex_name[0]
 GLuint Material::GetTexName() const {
   return tex_name[0];
+}
+
+// returns the width/height
+float Material::GetRatio() const {
+  return image_width/image_height;
 }
 
 // Setters
@@ -121,13 +128,13 @@ void Material::SetShininess(float shininess) {
 // filename is a string
 // loads the ppm file into texture
 void Material::SetTexture(std::string filename) {
-  float w, h, d;
+  float d;
   std::string ext = filename.substr(filename.find_last_of(".") + 1);
   if (ext == "ppm" || ext == "pam") {
     if (ext == "ppm") {
-      image = LoadPPM(filename, &w, &h);
+      image = LoadPPM(filename, &image_width, &image_height);
     } else {
-      image = LoadPAM(filename, &w, &h, &d);
+      image = LoadPAM(filename, &image_width, &image_height, &d);
     }
 
     glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -143,8 +150,8 @@ void Material::SetTexture(std::string filename) {
     // glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_BLEND);
     // glTexEnvfv(GL_TEXTURE_ENV, GL_TEXTURE_ENV_COLOR, colors);
 
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA,
-      GL_UNSIGNED_BYTE, image.data());
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image_width, image_height, 0,
+      GL_RGBA, GL_UNSIGNED_BYTE, image.data());
   } else {
     std::cout << "Only PPM and PAM files are supported, you gave a " << ext <<
     " file." << std::endl;

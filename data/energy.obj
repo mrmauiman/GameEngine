@@ -1,0 +1,24 @@
+#cube
+#material library
+mtllib ui.mtl
+
+#verticies
+v 0  -0.228  0
+v  2  -0.228  0
+v 0   0.228  0
+v  2   0.228  0
+
+#normals
+vn  0.0  0.0  1.0
+
+#texture vertices
+vt 0.0 0.0
+vt 1.0 0.0
+vt 0.0 1.0
+vt 1.0 1.0
+
+#set material
+usemtl energy
+#faces
+f 1/1/1 2/2/1 4/4/1
+f 1/1/1 3/3/1 4/4/1

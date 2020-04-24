@@ -52,6 +52,7 @@ int Light::NextAvailableLight() {
 Light::Light() {
   SetDefaults(1.0f, 1.0f, 1.0f);
   glEnable(GL_LIGHTING);
+  tags.push_back("light");
 }
 
 // Constructor
@@ -60,6 +61,7 @@ Light::Light() {
 Light::Light(float r, float g, float b) {
   SetDefaults(r, g, b);
   glEnable(GL_LIGHTING);
+  tags.push_back("light");
 }
 
 // Deconstructor

@@ -1,0 +1,10 @@
+# Blender MTL File: 'None'
+# Material Count: 1
+
+newmtl Shell
+Ns 40
+Ka 0.470899 0.470899 0.470899
+Kd 0.080012 0.080012 0.080012
+Ks 0.626984 0.626984 0.626984
+Ke 0.000000 0.000000 0.000000
+map_Ka default.ppm

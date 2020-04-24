@@ -17,6 +17,8 @@ Camera::Camera(GLfloat fov, GLfloat z_near, GLfloat z_far, bool radians) {
   this->fov = clamp(fov, MIN_FRUSTUM_ANGLE, MAX_FRUSTUM_ANGEL);
   this->z_near = z_near;
   this->z_far = z_far;
+  this->enabled = false;
+  tags.push_back("camera");
 }
 
 // changes the camera’s field of view by angle.

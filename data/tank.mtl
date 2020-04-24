@@ -1,0 +1,42 @@
+# Blender MTL File: 'None'
+# Material Count: 3
+
+newmtl Glow
+Ns 100
+Ka 0.0 0.5 1.0
+Kd 0.0 0.5 1.0
+Ks 0.5 0.5 0.5
+Ke 0.0 0.5 1.0
+map_Ka default.ppm
+
+newmtl EnemyGlow
+Ns 100
+Ka 1.0 0.0 0.0
+Kd 1.0 0.0 0.0
+Ks 0.5 0.5 0.5
+Ke 1.0 0.0 0.0
+map_Ka default.ppm
+
+newmtl Ring
+Ns 40
+Ka 0.0 0.0 1.0
+Kd 0.0 0.0 1.0
+Ks 1.0 1.0 1.0
+Ke 0.0 0.0 0.0
+map_Ka default.ppm
+
+newmtl EnemyRing
+Ns 40
+Ka 1.0 0.0 0.0
+Kd 1.0 0.0 0.0
+Ks 1.0 1.0 1.0
+Ke 0.0 0.0 0.0
+map_Ka default.ppm
+
+newmtl Shell
+Ns 40
+Ka 0.470899 0.470899 0.470899
+Kd 0.080012 0.080012 0.080012
+Ks 0.626984 0.626984 0.626984
+Ke 0.000000 0.000000 0.000000
+map_Ka default.ppm

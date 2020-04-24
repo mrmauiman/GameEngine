@@ -4,6 +4,8 @@
 
 #include <iostream>
 #include "engine/model.h"
+#include "engine/ui.h"
+#include "engine/light.h"
 
 int main(int argc, char **argv) {
   // Initialize the library
@@ -22,11 +24,14 @@ int main(int argc, char **argv) {
   glfwMakeContextCurrent(window);
 
   // Make star
-  std::string obj_file_name = "data/gear.obj";
-  engine::Model g1(obj_file_name);
+  engine::UI* ret = new engine::UI("data/reticle.pam");
+  ret->SetAttributes(0.5, 1, UI_FIX_WIDTH, UI_CENTER_CENTER);
+  ret->SetPosition(0.75, 0.5, 0);
 
-  int rotation = 0;
-  int rotation_speed = 1;
+  engine::Light light9;
+  light9.LookAt(glm::vec3(0.0f, 10.0f, 10.0f),
+                glm::vec3(0.0f, 0.0f, 0.0f),
+                glm::vec3(0.0f, 1.0f, 0.0f));
 
 
   // Loop until the user closes the window
@@ -36,40 +41,21 @@ int main(int argc, char **argv) {
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
     glViewport(0, 0, width, height);
+    float ratio = width/static_cast<float>(height);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(-ratio, ratio, -1, 1, 0, 10);
+
 
     // Clear the color buffer
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClearColor(1.0f, 1.0f, 1.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT);
-
-    rotation += rotation_speed;
 
     glMatrixMode(GL_MODELVIEW);
 
-    // Gear 1 Transformations
     glLoadIdentity();
-    glRotatef(rotation, 0.0f, 0.0f, 1.0f);
-    g1.Draw();
-
-    // Gear 2 Transformations
-    glLoadIdentity();
-    glRotatef(90, 0.0f, 0.0f, 1.0f);
-    glTranslatef(1.2f, 0.0f, 0.0f);
-    glRotatef(-rotation, 0.0f, 0.0f, 1.0f);
-    g1.Draw();
-
-    // Gear 3 Transformations
-    glLoadIdentity();
-    glRotatef(90+120, 0.0f, 0.0f, 1.0f);
-    glTranslatef(1.2f, 0.0f, 0.0f);
-    glRotatef(-rotation+12, 0.0f, 0.0f, 1.0f);
-    g1.Draw();
-
-    // Gear 4 Transformations
-    glLoadIdentity();
-    glRotatef(90+240, 0.0f, 0.0f, 1.0f);
-    glTranslatef(1.2f, 0.0f, 0.0f);
-    glRotatef(-rotation-12, 0.0f, 0.0f, 1.0f);
-    g1.Draw();
+    ret->SetScreenRatio(ratio);
+    ret->Draw();
 
     // Swap front and back buffers
     glfwSwapBuffers(window);

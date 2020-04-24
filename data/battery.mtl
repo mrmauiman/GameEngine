@@ -1,0 +1,18 @@
+# Blender MTL File: 'None'
+# Material Count: 2
+
+newmtl Metal
+Ns 40
+Ka 1.000000 1.000000 1.000000
+Kd 0.052218 0.052218 0.052218
+Ks 0.769841 0.769841 0.769841
+Ke 0.000000 0.000000 0.000000
+map_Ka default.ppm
+
+newmtl Wrapper
+Ns 100
+Ka 0.0 0.000000 0.200000
+Kd 0.037369 0.031064 0.733016
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+map_Ka default.ppm

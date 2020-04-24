@@ -1,0 +1,41 @@
+# Material Count 1
+
+newmtl reticle
+Ns 128
+Ka 0.0 0.0 1.0
+Kd 0.8 0.8 1.0
+Ks 1.0 1.0 1.0
+Ke 0.2 0.2 0.8
+map_Ka reticle.pam
+
+newmtl energy_ui
+Ns 128
+Ka 0.0 0.0 1.0
+Kd 0.8 0.8 1.0
+Ks 1.0 1.0 1.0
+Ke 0.2 0.2 0.8
+map_Ka energy_ui.pam
+
+newmtl health_ui
+Ns 128
+Ka 0.0 0.0 1.0
+Kd 0.8 0.8 1.0
+Ks 1.0 1.0 1.0
+Ke 0.2 0.2 0.8
+map_Ka health_ui.pam
+
+newmtl energy
+Ns 128
+Ka 0.0 0.0 1.0
+Kd 0.8 0.8 1.0
+Ks 1.0 1.0 1.0
+Ke 0.2 0.2 0.8
+map_Ka energy.ppm
+
+newmtl health
+Ns 128
+Ka 0.0 0.0 1.0
+Kd 0.8 0.8 1.0
+Ks 1.0 1.0 1.0
+Ke 0.2 0.2 0.8
+map_Ka health.ppm

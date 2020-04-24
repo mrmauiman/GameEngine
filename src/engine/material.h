@@ -30,6 +30,7 @@ class Material {
 
   GLuint tex_name[1];
   std::vector<GLubyte> image;
+  float image_width, image_height;
 
  public:
   // Default Constructor
@@ -45,6 +46,9 @@ class Material {
   // Getters
   // returns the tex_name[0]
   GLuint GetTexName() const;
+
+  // returns the width/height
+  float GetRatio() const;
 
   // Setters
   // ambient is an rgba color

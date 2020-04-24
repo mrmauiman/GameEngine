@@ -24,6 +24,9 @@ class Camera : public GameObject {
   GLfloat z_far;
 
  public:
+  // Whether the camera is active
+  bool enabled;
+
   // Constructor
   // fovy is the field of view, z_near is the closest objects will be rendered,
   // and z_far is the render distance.  All parameters are positive

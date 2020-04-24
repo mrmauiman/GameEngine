@@ -1,0 +1,9 @@
+# Material Count 1
+
+newmtl floor
+Ns 128
+Ka 0.0 0.0 0.1
+Kd 0.3 0.3 0.3
+Ks 0.0 0.0 0.0
+Ke 0.0 0.0 0.0
+map_Ka default.ppm

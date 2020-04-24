@@ -1,0 +1,17 @@
+# Blender MTL File: 'None'
+# Material Count: 1
+
+newmtl OuterShell
+Ns 128
+Ka 0.0 0.0 0.0
+Kd 0.0 0.0 0.4
+Ks 0.0 0.0 0.0
+Ke 0.0 0.0 0.1
+map_Ka energy_shell.pam
+
+newmtl Innards
+Ns 128
+Ka 0.0 0.0 1.0
+Kd 0.0 0.0 1.0
+Ks 0.0 0.0 0.0
+Ke 0.0 0.0 1.0

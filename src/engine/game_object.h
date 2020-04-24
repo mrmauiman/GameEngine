@@ -8,17 +8,22 @@
 #include <math.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <string>
+#include <vector>
 
 #include "glm/gtx/quaternion.hpp"
 #include "glm/vec3.hpp"
 #include "glm/gtc/type_ptr.hpp"
 #include "glm/mat4x4.hpp"
 #include "glm/gtx/vector_angle.hpp"
+
 #include "engine/constants.h"
 #include "engine/helper.h"
 
 namespace engine {
 
+// Forward declare Project
+class Project;
 class GameObject {
  protected:
   glm::vec3 position;
@@ -28,25 +33,18 @@ class GameObject {
   // Bounding Box
   glm::vec3 bounding_box_min, bounding_box_max;
 
-  // angle and axis describe an angle axis and radians is whether angle is
-  // radians, by default this is true
-  // returns a quaternion that represents the axis angle
-  glm::quat AxisToQuat(float angle, glm::vec3 axis, bool radians) const;
-
-  // axis is an axis in 3d space and point is a point in 3d space
-  // returns the value of how far along the axis point is
-  float ValueOnAxis(glm::vec3 axis, glm::vec3 point) const;
-
-  // min_max is a array of size 2, axis is an axis in 3D space, points is an
-  // array of 8 points
-  // sets min_max[0] to the smallest value on axis in points and min_max[1] to
-  // the largest
-  void GetMinMaxOnAxis(float * min_max, glm::vec3 axis, glm::vec3 * points)
-    const;
-
  public:
+  Project* project;
+  int id;
+  std::vector<std::string> tags;
+  bool bounding_box_axis_aligned;
+
   // Default Constructor
   GameObject();
+
+  // tag is a string
+  // returns if tag is in tags
+  bool HasTag(std::string tag);
 
   // position is the new position
   // sets this.position to position
@@ -110,8 +108,16 @@ class GameObject {
   // otherwise
   bool Intersects(const GameObject & other) const;
 
+  // start and end define a line segment in 3d space
+  // returns the first position on that segment that this intersects or -1 if
+  // this doesn't intersect
+  float RayCast(glm::vec3 start, glm::vec3 end) const;
+
   // Virtual Function Update
   virtual void Update(float delta) = 0;
+
+  // Overload << operator
+  friend std::ostream& operator<<(std::ostream& os, const GameObject& go);
 };
 }  // namespace engine
 

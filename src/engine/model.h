@@ -25,7 +25,7 @@
 namespace engine {
 
 class Model {
- private:
+ protected:
   // member data
 
   // Verticies is a c++ vector of vectors
@@ -42,7 +42,7 @@ class Model {
   std::vector<glm::vec3> face_attributes;
 
   // Faces is a c++ vector of vectors
-  std::vector<glm::vec3> faces;
+  // std::vector<glm::vec3> faces;
 
   // objects is a map that matches material names to groups of faces
   std::map<std::string, std::vector<glm::vec3>> objects;

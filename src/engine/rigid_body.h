@@ -15,16 +15,20 @@
 #include "engine/game_object.h"
 #include "engine/model.h"
 #include "engine/helper.h"
+#include "engine/animation_controller.h"
 
 namespace engine {
 
 class RigidBody : public GameObject {
- private:
+ protected:
   const Model *model;
   glm::vec4 color = {1, 1, 1, 1};
+  AnimationController animation_controller;
 
  public:
   // Constructor
+  RigidBody() {tags.push_back("rigidbody");}
+
   // model is a pointer to a model
   explicit RigidBody(const Model *model);
 

@@ -8,44 +8,6 @@ namespace engine {
 
   // PROTECTED
 
-  // angle and axis describe an angle axis and radians is whether angle is
-  // radians, by default this is true
-  // returns a quaternion that represents the axis angle
-  glm::quat GameObject::AxisToQuat(float angle, glm::vec3 axis, bool radians)
-    const {
-    if (!radians) {
-      angle = deg2rad(angle);
-    }
-
-    return glm::angleAxis(angle, axis);
-  }
-
-  // axis is an axis in 3d space and point is a point in 3d space
-  // returns the value of how far along the axis point is
-  float GameObject::ValueOnAxis(glm::vec3 axis, glm::vec3 point) const {
-    axis = glm::normalize(axis);
-    glm::vec3 x_axis(1, 0, 0);
-    glm::vec3 r_axis = glm::normalize(glm::cross(axis, x_axis));
-    float angle = glm::angle(axis, x_axis);
-    point = glm::rotate(AxisToQuat(angle, r_axis, true), point);
-    return point.x;
-  }
-
-  // min_max is a array of size 2, axis is an axis in 3D space, points is an
-  // array of 8 points
-  // sets min_max[0] to the smallest value on axis in points and min_max[1] to
-  // the largest
-  void GameObject::GetMinMaxOnAxis(float * min_max, glm::vec3 axis,
-                                   glm::vec3 * points) const {
-    min_max[0] = ValueOnAxis(axis, points[0]);
-    min_max[1] = ValueOnAxis(axis, points[0]);
-    for (int i = 1; i < NUM_BOX_POINTS; i++) {
-      float val = ValueOnAxis(axis, points[i]);
-      min_max[0] = (min_max[0] > val)?val:min_max[0];
-      min_max[1] = (min_max[1] < val)?val:min_max[1];
-    }
-  }
-
   // PUBLIC
 
   // Default Constructor
@@ -55,6 +17,21 @@ namespace engine {
     glm::vec3 axis = {0.0f, 0.0f, -1.0f};
     orientation = glm::angleAxis(0.0f, axis);
     SetBoundingBox(glm::vec3(0, 0, 0), glm::vec3(0, 0, 0));
+    bounding_box_axis_aligned = false;
+  }
+
+  // tag is a string
+  // returns if tag is in tags
+  bool GameObject::HasTag(std::string tag) {
+    bool found = false;
+    int i = 0;
+    while (i < tags.size() && !found) {
+      if (tags[i] == tag) {
+        found = true;
+      }
+      i++;
+    }
+    return found;
   }
 
   // position is the new position
@@ -149,7 +126,10 @@ namespace engine {
     };
 
     for (int i = 0; i < NUM_BOX_POINTS; i++) {
-      glm::vec3 temp = glm::rotate(orientation, points[i]);
+      glm::vec3 temp = points[i];
+      if (!bounding_box_axis_aligned) {
+        temp = glm::rotate(orientation, temp);
+      }
       temp += position;
       rv[i] = temp;
     }
@@ -176,12 +156,12 @@ namespace engine {
     glm::vec3 * my_points = GetBoundingBoxPoints();
     glm::vec3 * other_points = other.GetBoundingBoxPoints();
     glm::vec3 axises[NUM_BOX_AXIS] = {
-      my_points[0] - my_points[1],
-      my_points[0] - my_points[2],
-      my_points[0] - my_points[3],
-      other_points[0] - other_points[1],
-      other_points[0] - other_points[2],
-      other_points[0] - other_points[3],
+      glm::normalize(my_points[0] - my_points[1]),
+      glm::normalize(my_points[0] - my_points[2]),
+      glm::normalize(my_points[0] - my_points[3]),
+      glm::normalize(other_points[0] - other_points[1]),
+      glm::normalize(other_points[0] - other_points[2]),
+      glm::normalize(other_points[0] - other_points[3])
     };
 
     for (int i = 0; i < NUM_BOX_AXIS && rv; i++) {
@@ -201,6 +181,55 @@ namespace engine {
     delete[] my_points;
     delete[] other_points;
     return rv;
+  }
+
+  // start and end define a line segment in 3d space
+  // returns the first position on that segment that this intersects or -1 if
+  // this doesn't intersect
+  float GameObject::RayCast(glm::vec3 start, glm::vec3 end) const {
+    float rv = -1;
+    // Create points and faces for bounding box
+    glm::vec3* points = GetBoundingBoxPoints();
+    int faces[6][4] = {
+      {0, 1, 3, 6},
+      {0, 3, 5, 2},
+      {2, 5, 4, 7},
+      {1, 6, 4, 7},
+      {0, 2, 1, 7},
+      {3, 5, 4, 6}
+    };
+
+    // get the first intersection
+    for (int i = 0; i < 6; i++) {
+      float temp = GetCollisionOnLine(start, end, faces[i], points);
+      if (temp != -1) {
+        if (rv == -1 || temp < rv) {
+          rv = temp;
+        }
+      }
+    }
+
+    // clean up heap
+    delete[] points;
+    return rv;
+  }
+
+  // Overload << operator
+  std::ostream& operator<<(std::ostream& os, const GameObject& go) {
+    os << "[" << go.id << "]: {";
+    for (int i = 0; i < go.tags.size(); i++) {
+      os << "\"" << go.tags[i] << "\"";
+      if (i < go.tags.size()-1) {
+        os << ", ";
+      }
+    }
+    glm::vec3 pos = go.position;
+    os << "}, {p: (" << pos.x << ", " << pos.y << ", " << pos.z << "), o: {"
+    << glm::angle(go.orientation) << ", (";
+    glm::vec3 r_axis = glm::axis(go.orientation);
+    os << r_axis.x << ", " << r_axis.y << ", " << r_axis.z << ")}, s: (" <<
+    go.scale.x << ", " << go.scale.y << ", " << go.scale.z << ")}";
+    return os;
   }
 
 }  // namespace engine

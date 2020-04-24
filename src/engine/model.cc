@@ -223,7 +223,7 @@ void Model::Clear() {
   texture_vertices.clear();
   normals.clear();
   face_attributes.clear();
-  faces.clear();
+  // faces.clear();
 }
 
 // returns a pointer to an array containing all verticies

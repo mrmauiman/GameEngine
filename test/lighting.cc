@@ -76,9 +76,6 @@ int main(int argc, char **argv) {
     GLfloat mat_shininess[] = { 90.0 };
     glShadeModel(GL_SMOOTH);
 
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, mat_specular);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_SHININESS, mat_shininess);
-
     // Set the rendering viewport location and dimensions
     int width, height;
     glfwGetFramebufferSize(window, &width, &height);
