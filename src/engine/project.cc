@@ -29,12 +29,18 @@ void Project::TrashCollector() {
     // std::cout << *to_delete << std::endl;
     objects.erase(trashcan[i]);
     std::vector<int>::iterator it;
-    it = std::find(rigidbodies.begin(), rigidbodies.end(), trashcan[i]);
-    if (it != rigidbodies.end()) rigidbodies.erase(it);
-    it = std::find(cameras.begin(), cameras.end(), trashcan[i]);
-    if (it != cameras.end()) cameras.erase(it);
-    it = std::find(uis.begin(), uis.end(), trashcan[i]);
-    if (it != uis.end()) uis.erase(it);
+    for (auto & rbs : rigidbodies) {
+      it = std::find(rbs.second.begin(), rbs.second.end(), trashcan[i]);
+      if (it != rbs.second.end()) rbs.second.erase(it);
+    }
+    for (auto & cms : cameras) {
+      it = std::find(cms.second.begin(), cms.second.end(), trashcan[i]);
+      if (it != cms.second.end()) cms.second.erase(it);
+    }
+    for (auto & uil : uis) {
+      it = std::find(uil.second.begin(), uil.second.end(), trashcan[i]);
+      if (it != uil.second.end()) uil.second.erase(it);
+    }
     delete to_delete;
   }
   trashcan.clear();
@@ -51,6 +57,7 @@ Project::Project() {
   deadzone = ENGINE_DEAD_ZONE;
   mouse_sensitivity = ENGINE_MOUSE_SENSITIVITY;
   current_id = 0;
+  current_scene = "gameengine::default";
 }
 
 // Constructor
@@ -61,6 +68,7 @@ Project::Project(std::string pname) {
   deadzone = ENGINE_DEAD_ZONE;
   mouse_sensitivity = ENGINE_MOUSE_SENSITIVITY;
   current_id = 0;
+  current_scene = "gameengine::default";
 }
 
 // initializes glwf and openGL for drawing
@@ -112,12 +120,12 @@ void Project::GameLoop() {
     glEnable(GL_DEPTH_TEST);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    for (int i = 0; i < cameras.size(); i++) {
-      Camera* camera = dynamic_cast<Camera*>(objects[cameras[i]]);
-      if (camera) {
-        if (camera->enabled) {
-          camera->MultProjectionMatrix(width, height);
-          center = camera->GetPosition();
+    for (int i = 0; i < cameras[current_scene].size(); i++) {
+      Camera* cam = dynamic_cast<Camera*>(objects[cameras[current_scene][i]]);
+      if (cam) {
+        if (cam->enabled) {
+          cam->MultProjectionMatrix(width, height);
+          center = cam->GetPosition();
         }
       }
     }
@@ -129,21 +137,22 @@ void Project::GameLoop() {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
       // Transform The Camera
-      for (int i = 0; i < cameras.size(); i++) {
-        Camera* camera = dynamic_cast<Camera*>(objects[cameras[i]]);
-        if (camera) {
-          camera->Update(delta);
-          if (camera->enabled) {
-            camera->MultViewMatrix();
+      for (int i = 0; i < cameras[current_scene].size(); i++) {
+        Camera* cam = dynamic_cast<Camera*>(objects[cameras[current_scene][i]]);
+        if (cam) {
+          cam->Update(delta);
+          if (cam->enabled) {
+            cam->MultViewMatrix();
           }
         }
       }
       glPushMatrix();
         // std::cout << *objects[rigidbodies[257]] << std::endl;
         // Draw/Update Rigid Bodies
-        for (int i = 0; i < rigidbodies.size(); i++) {
+        for (int i = 0; i < rigidbodies[current_scene].size(); i++) {
           // if (WithInRender(rigidbodies[i]->GetPosition())) {
-            RigidBody* rb = dynamic_cast<RigidBody*>(objects[rigidbodies[i]]);
+            RigidBody* rb =
+            dynamic_cast<RigidBody*>(objects[rigidbodies[current_scene][i]]);
             if (rb) {
               rb->Update(delta);
               // std::cout << i+1 << "/" << rigidbodies.size() << std::endl;
@@ -164,8 +173,8 @@ void Project::GameLoop() {
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
       // Draw UI
-      for (int i = 0; i < uis.size(); i++) {
-        UI* ui = dynamic_cast<UI*>(objects[uis[i]]);
+      for (int i = 0; i < uis[current_scene].size(); i++) {
+        UI* ui = dynamic_cast<UI*>(objects[uis[current_scene][i]]);
         if (ui) {
           ui->SetScreenRatio(ratio);
           ui->Update(delta);
@@ -200,7 +209,10 @@ void Project::GameLoop() {
 // camera is a pointer to a Camera object
 // adds camera to cameras and returns its index
 int Project::AddCamera(Camera* camera) {
-  cameras.push_back(current_id);
+  if (!SceneExists(current_scene)) {
+    AddScene(current_scene);
+  }
+  cameras[current_scene].push_back(current_id);
   objects[current_id] = camera;
   camera->project = this;
   camera->id = current_id;
@@ -215,7 +227,7 @@ void Project::ActivateCamera(int id) {
   if (new_cam) {
     // disable all cameras
     for (int i = 0; i < cameras.size(); i++) {
-      Camera* cam = dynamic_cast<Camera*>(objects[cameras[i]]);
+      Camera* cam = dynamic_cast<Camera*>(objects[cameras[current_scene][i]]);
       cam->enabled = false;
     }
     // enable the new camera
@@ -227,7 +239,10 @@ void Project::ActivateCamera(int id) {
 // create a new rigidbody to rigidbodies with model as its model
 // and return its index
 int Project::AddRigidBody(RigidBody* rigidbody) {
-  rigidbodies.push_back(current_id);
+  if (!SceneExists(current_scene)) {
+    AddScene(current_scene);
+  }
+  rigidbodies[current_scene].push_back(current_id);
   objects[current_id] = rigidbody;
   rigidbody->project = this;
   rigidbody->id = current_id;
@@ -238,12 +253,43 @@ int Project::AddRigidBody(RigidBody* rigidbody) {
 // ui is a pointer to a UI
 // adds ui to objects and puts its id in uis
 int Project::AddUI(GameObject* ui) {
-  uis.push_back(current_id);
+  if (!SceneExists(current_scene)) {
+    AddScene(current_scene);
+  }
+  uis[current_scene].push_back(current_id);
   objects[current_id] = ui;
   ui->project = this;
   ui->id = current_id;
   current_id++;
   return ui->id;
+}
+
+// scene is a name of a scene
+// returns whether scene is in scenes
+bool Project::SceneExists(std::string scene) {
+  return std::count(scenes.begin(), scenes.end(), scene);
+}
+
+// scene is a string
+// adds scene to the scenes and returns whether it was successful
+bool Project::AddScene(std::string scene) {
+  bool rv = false;
+  if (!SceneExists(scene)) {
+    scenes.push_back(scene);
+    cameras.insert({scene, {}});
+    rigidbodies.insert({scene, {}});
+    uis.insert({scene, {}});
+    rv = true;
+  }
+  return rv;
+}
+
+// scene is a name of a scene
+// sets current scene to scene if it is in scenes
+void Project::SetCurrentScene(std::string scene) {
+  if (SceneExists(scene)) {
+    current_scene = scene;
+  }
 }
 
 // index is a position in rigidbodies
@@ -341,10 +387,11 @@ bool Project::GetButtonInput(std::string input) {
 float Project::RayCast(glm::vec3 start, glm::vec3 end,
 std::vector<std::string> ignore) {
   float rv = -1;
-  if (rigidbodies.size() > 0) {
-    for (int i = 0; i < rigidbodies.size(); i++) {
-      if (!ShouldIgnore(objects[rigidbodies[i]], ignore)) {
-        RigidBody* rb = dynamic_cast<RigidBody*>(objects[rigidbodies[i]]);
+  if (rigidbodies[current_scene].size() > 0) {
+    for (int i = 0; i < rigidbodies[current_scene].size(); i++) {
+      if (!ShouldIgnore(objects[rigidbodies[current_scene][i]], ignore)) {
+        RigidBody* rb =
+        dynamic_cast<RigidBody*>(objects[rigidbodies[current_scene][i]]);
         if (rb) {
           float temp = rb->RayCast(start, end);
           if (temp != -1) {
@@ -365,15 +412,15 @@ int Project::Collides(int id, std::vector<std::string> ignore) {
   int rv = -1;
   // std::cout << rv << std::endl;
   GameObject* me = objects[id];
-  for (int i = 0; i < rigidbodies.size() && rv == -1; i++) {
-    if (!ShouldIgnore(objects[rigidbodies[i]], ignore)
-    && rigidbodies[i] != id && PointInBox(objects[rigidbodies[i]]->GetPosition()
-    , me->GetPosition(), collision_radius)) {
-      GameObject* other = objects[rigidbodies[i]];
+  for (int i = 0; i < rigidbodies[current_scene].size() && rv == -1; i++) {
+    if (!ShouldIgnore(objects[rigidbodies[current_scene][i]], ignore)
+    && rigidbodies[current_scene][i] != id &&
+    PointInBox(objects[rigidbodies[current_scene][i]]->GetPosition(),
+    me->GetPosition(), collision_radius)) {
+      GameObject* other = objects[rigidbodies[current_scene][i]];
       if (me->Intersects(*other)) {
         rv = other->id;
         // std::cout << *me << " Collided with " << *other << std::endl;
-        // std::cout << ShouldIgnore(other, ignore) << std::endl;
       }
     }
   }

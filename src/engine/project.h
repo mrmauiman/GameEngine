@@ -30,9 +30,11 @@ class Project {
  private:
   std::string name;
   int current_id;
-  std::vector<int> cameras;
-  std::vector<int> rigidbodies;
-  std::vector<int> uis;
+  std::map<std::string, std::vector<int>> cameras;
+  std::map<std::string, std::vector<int>> rigidbodies;
+  std::map<std::string, std::vector<int>> uis;
+  std::vector<std::string> scenes;
+  std::string current_scene;
   std::map<int, GameObject*> objects;
   std::vector<int> trashcan;
   glm::vec3 center;
@@ -89,6 +91,18 @@ class Project {
   // ui is a pointer to a UI
   // adds ui to objects and puts its id in uis
   int AddUI(GameObject* ui);
+
+  // scene is a name of a scene
+  // returns whether scene is in scenes
+  bool SceneExists(std::string scene);
+
+  // scene is a string
+  // adds scene to the scenes and returns whether it was successful
+  bool AddScene(std::string scene);
+
+  // scene is a name of a scene
+  // sets current scene to scene if it is in scenes
+  void SetCurrentScene(std::string scene);
 
   // index is a position in rigidbodies
   // returns a pointer to the rigidbody at index in rigidbodies

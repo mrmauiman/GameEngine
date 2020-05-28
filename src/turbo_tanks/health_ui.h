@@ -15,7 +15,9 @@ class HealthUI : public engine::UI {
  public:
   Player* player;
 
-  explicit HealthUI(const std::string &image_file) : engine::UI(image_file) {}
+  explicit HealthUI(const std::string &image_file) : engine::UI(image_file) {
+    tags.push_back("health_ui");
+  }
 
   void Update(float delta) {
     SetScale(glm::vec3(player->GetHealthFraction(), 1, 1));

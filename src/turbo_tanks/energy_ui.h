@@ -15,7 +15,9 @@ class EnergyUI : public engine::UI {
  public:
   Player* player;
 
-  explicit EnergyUI(const std::string &image_file) : engine::UI(image_file) {}
+  explicit EnergyUI(const std::string &image_file) : engine::UI(image_file) {
+    tags.push_back("energy_ui");
+  }
 
   void Update(float delta) {
     SetScale(glm::vec3(player->GetEnergyFraction(), 1, 1));

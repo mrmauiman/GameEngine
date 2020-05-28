@@ -171,6 +171,13 @@ int main() {
   turbo_tanks.render_distance = RENDER_DISTANCE;
   turbo_tanks.collision_radius = 3;
 
+  turbo_tanks.AddScene("menu");
+  turbo_tanks.AddScene("level_1");
+  turbo_tanks.SetCurrentScene("menu");
+  // Add menu objects
+
+  turbo_tanks.SetCurrentScene("level_1");
+
   // Set Input Map
   SetInputs(&turbo_tanks);
 
@@ -204,7 +211,6 @@ int main() {
   hp->player = player;
   turbo_tanks.AddUI(hp);
 
-
   engine::UI* hp_ui = new engine::UI("data/health_ui.pam");
   hp_ui->SetAttributes(width, 1, UI_FIX_WIDTH, UI_RIGHT_BOTTOM);
   hp_ui->SetPosition(x, sep, -1);
@@ -228,6 +234,8 @@ int main() {
   light9.LookAt(glm::vec3(0.0f, 10.0f, 10.0f),
                 glm::vec3(0.0f, 0.0f, 0.0f),
                 glm::vec3(0.0f, 1.0f, 0.0f));
+
+  // turbo_tanks.SetCurrentScene("menu");
 
   turbo_tanks.GameLoop();
   return 0;
